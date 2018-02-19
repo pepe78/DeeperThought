@@ -27,10 +27,12 @@ private:
 	void BackWard(CPUGPUMemory *firstInput);
 
 	int ComputeCorrect(CPUGPUMemory *expected_output, CPUGPUMemory *output);
+	void SaveToFile();
+	void LoadFromFile(string &paramFile);
 
 	int epoch;
 public:
-	DNN(string &configFile, string &trainSetFile, string &testSetFile, int batchSize);
+	DNN(string &configFile, string &trainSetFile, string &testSetFile, int batchSize, string &paramFile);
 	~DNN();
 
 	void Train();

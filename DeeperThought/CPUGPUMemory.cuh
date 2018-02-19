@@ -1,6 +1,10 @@
 #ifndef CPUGPUMEMORY
 #define CPUGPUMEMORY
 
+#include <fstream>
+
+using namespace std;
+
 class CPUGPUMemory
 {
 private:
@@ -21,6 +25,9 @@ public:
 
 	void CopyCPUtoGPU();
 	void CopyGPUtoCPU();
+
+	void SaveToFile(ofstream &os);
+	void LoadFromFile(ifstream &is);
 
 	void Reset();
 };

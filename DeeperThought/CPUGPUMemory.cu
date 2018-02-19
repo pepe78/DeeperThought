@@ -91,3 +91,15 @@ void CPUGPUMemory::Reset()
 	memset(memCPU, 0, size * (is_float ? sizeof(float) : sizeof(int)));
 	CopyCPUtoGPU();
 }
+
+void CPUGPUMemory::SaveToFile(ofstream &os)
+{
+	CopyGPUtoCPU();
+	os.write((char*)memCPU, size * (is_float ? sizeof(float) : sizeof(int)));
+}
+
+void CPUGPUMemory::LoadFromFile(ifstream &is)
+{
+	is.read((char*)memCPU, size * (is_float ? sizeof(float) : sizeof(int)));
+	CopyCPUtoGPU();
+}

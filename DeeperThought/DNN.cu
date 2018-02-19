@@ -11,7 +11,7 @@
 
 using namespace std;
 
-DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batchSize)
+DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batchSize, string &paramFile)
 {
 	ifstream is(configFile);
 	if (is.is_open())
@@ -99,6 +99,8 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batc
 	errorLayer = new DNNLayerError(layers[layers.size() - 1]->GetOutputWidth(), batchSize);
 
 	epoch = 0;
+
+	LoadFromFile(paramFile);
 }
 
 DNN::~DNN()
@@ -128,7 +130,7 @@ void DNN::Train()
 		printf("Epoch %d ", epoch);
 		TrainEpoch();
 		Test();
-
+		SaveToFile();
 		epoch++;
 	}
 }
@@ -234,4 +236,43 @@ void DNN::Test()
 	printf("TestError %lf (%d)\n", ret, correct);
 	string txt = convertToString((float)ret / (testSet->GetNumSamples() + 0.0f)) + ((string)",") + convertToString(correct / (testSet->GetNumSamples()+ 0.0f)) + ((string)"\n");
 	AppendToFile("debug.csv", txt);
+}
+
+void DNN::SaveToFile()
+{
+	string filename = "params_";
+	filename += convertToString(epoch);
+	filename += ".bin";
+	ofstream os(filename, ios::out | ios::binary);
+	for (size_t i = 0; i < layers.size(); i++)
+	{
+		CPUGPUMemory *m = layers[i]->GetParams();
+		if (m != NULL)
+		{
+			m->SaveToFile(os);
+		}
+	}
+	os.close();
+}
+
+void DNN::LoadFromFile(string &paramFile)
+{
+	ifstream is(paramFile, ios::in | ios::binary);
+
+	if (is.is_open())
+	{
+		printf("loading file %s\n", paramFile.c_str());
+		for (size_t i = 0; i < layers.size(); i++)
+		{
+			CPUGPUMemory *m = layers[i]->GetParams();
+			if (m != NULL)
+			{
+				m->LoadFromFile(is);
+			}
+		}
+		is.close();
+
+		string numEp = getNumbersOnly(paramFile);
+		epoch = convertToInt(numEp) + 1;
+	}
 }

@@ -12,5 +12,6 @@ float convertToFloat(string &inp);
 void AppendToFile(string filename, string &text);
 string convertToString(int num);
 string convertToString(float num);
+string getNumbersOnly(string &text);
 
 #endif

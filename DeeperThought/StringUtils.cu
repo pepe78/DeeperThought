@@ -14,6 +14,21 @@ string convertToString(float num)
 	return to_string(num);
 }
 
+string getNumbersOnly(string &text)
+{
+	string ret = "";
+
+	for (size_t i = 0; i < text.size(); i++)
+	{
+		if (text[i] >= '0' && text[i] <= '9')
+		{
+			ret += text[i];
+		}
+	}
+
+	return ret;
+}
+
 void split_without_space(string &inp, vector<string> &outp, char seprator)
 {
 	string tmp = "";
