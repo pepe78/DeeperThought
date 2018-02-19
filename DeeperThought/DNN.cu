@@ -100,6 +100,7 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batc
 
 	epoch = 0;
 
+	layers[0]->RemoveDeltaInput();
 	LoadFromFile(paramFile);
 }
 

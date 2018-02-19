@@ -30,6 +30,8 @@ public:
 	CPUGPUMemory* GetDeltaInput();
 	CPUGPUMemory* GetParams();
 	void MakeStep();
+
+	void RemoveDeltaInput();
 };
 
 #endif

@@ -77,7 +77,10 @@ __global__ void convolution_backward(float *dinp, float *dpars, const float *dou
 						{
 							for (int l = 0; l < y2; l++)
 							{
-								dinp[tid * inputWidth + (i + k) * x2 + (j + l)] += tmp * p[c * y1 * y2 + k * y2 + l];
+								if (dinp != NULL)
+								{
+									dinp[tid * inputWidth + (i + k) * x2 + (j + l)] += tmp * p[c * y1 * y2 + k * y2 + l];
+								}
 								atomicAdd(&(dpars[c * y1 * y2 + k * y2 + l]), tmp * x[(i + k) * x2 + (j + l)]);
 							}
 						}
@@ -133,6 +136,6 @@ void DNNLayerConvolution::Backward(CPUGPUMemory* input, CPUGPUMemory* deltaOutpu
 {
 	int threadsPerBlock = 256;
 	int numBlocks = ((input->GetSize() / inputWidth) + threadsPerBlock - 1) / threadsPerBlock;
-	convolution_backward<<<numBlocks, threadsPerBlock>>>((float*)deltaInput->GetGPUMemory(), (float*)dparams->GetGPUMemory(), (float*)deltaOutput->GetGPUMemory(),
+	convolution_backward<<<numBlocks, threadsPerBlock>>>(deltaInput == NULL ? NULL : (float*)deltaInput->GetGPUMemory(), (float*)dparams->GetGPUMemory(), (float*)deltaOutput->GetGPUMemory(),
 		(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), (float*)params->GetGPUMemory(), inputWidth, outputWidth, numConvolutions, x1, x2, y1, y2, (input->GetSize() / inputWidth));
 }

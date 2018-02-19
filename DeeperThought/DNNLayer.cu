@@ -115,3 +115,12 @@ void DNNLayer::MakeStep()
 		WaitForGPUToFinish();
 	}
 }
+
+void DNNLayer::RemoveDeltaInput()
+{
+	if (deltaInput != NULL)
+	{
+		delete deltaInput;
+		deltaInput = NULL;
+	}
+}

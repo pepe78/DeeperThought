@@ -32,7 +32,10 @@ __global__ void matrix_backward(float *dinp, float *dpars, const float *doutp, c
 			atomicAdd(&(dpars[i * (inputWidth + 1)]), doutp[tid * outputWidth + i]);
 			for (int j = 0; j < inputWidth; j++)
 			{
-				dinp[tid* inputWidth + j] += doutp[tid * outputWidth + i] * pars[i * (inputWidth + 1) + 1 + j];
+				if (dinp != NULL)
+				{
+					dinp[tid* inputWidth + j] += doutp[tid * outputWidth + i] * pars[i * (inputWidth + 1) + 1 + j];
+				}
 				atomicAdd(&(dpars[i * (inputWidth + 1) + 1 + j]), doutp[tid * outputWidth + i] * inp[tid* inputWidth + j]);
 			}
 		}
@@ -61,6 +64,6 @@ void DNNLayerMatrix::Backward(CPUGPUMemory* input, CPUGPUMemory* deltaOutput)
 {
 	int threadsPerBlock = 256;
 	int numBlocks = ((input->GetSize() / inputWidth) + threadsPerBlock - 1) / threadsPerBlock;
-	matrix_backward<<<numBlocks, threadsPerBlock>>>((float*)deltaInput->GetGPUMemory(), (float*)dparams->GetGPUMemory(), (float*)deltaOutput->GetGPUMemory(),
+	matrix_backward<<<numBlocks, threadsPerBlock>>>(deltaInput == NULL ? NULL : (float*)deltaInput->GetGPUMemory(), (float*)dparams->GetGPUMemory(), (float*)deltaOutput->GetGPUMemory(),
 		(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), (float*)params->GetGPUMemory(), inputWidth, outputWidth, (input->GetSize() / inputWidth));
 }
