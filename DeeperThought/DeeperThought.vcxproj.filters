@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CudaCompile Include="main.cu" />
+    <CudaCompile Include="DNN.cu" />
+    <CudaCompile Include="DNNLayer.cu">
+      <Filter>Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="GPU.cu">
+      <Filter>GPU</Filter>
+    </CudaCompile>
+    <CudaCompile Include="StringUtils.cu">
+      <Filter>Utils</Filter>
+    </CudaCompile>
+    <CudaCompile Include="CPUGPUMemory.cu">
+      <Filter>GPU</Filter>
+    </CudaCompile>
+    <CudaCompile Include="DataSet.cu" />
+    <CudaCompile Include="DataBatch.cu" />
+    <CudaCompile Include="DNNLayerMatrix.cu">
+      <Filter>Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="DNNLayerConvolution.cu">
+      <Filter>Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="DNNLayerSigmoid.cu">
+      <Filter>Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="DNNLayerMax.cu">
+      <Filter>Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="DNNLayerError.cu">
+      <Filter>Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="RandUtils.cu">
+      <Filter>Utils</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{995ea337-85df-48e3-9709-16752e675f19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Layers">
+      <UniqueIdentifier>{bae90d7c-9b25-4190-aac6-91db910ed995}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GPU">
+      <UniqueIdentifier>{780b23df-8cc4-4f05-bded-8fc35d7f9874}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DNN.cuh" />
+    <ClInclude Include="DNNLayer.cuh">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="GPU.cuh">
+      <Filter>GPU</Filter>
+    </ClInclude>
+    <ClInclude Include="StringUtils.cuh">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUGPUMemory.cuh">
+      <Filter>GPU</Filter>
+    </ClInclude>
+    <ClInclude Include="DataSet.cuh" />
+    <ClInclude Include="DataBatch.cuh" />
+    <ClInclude Include="DNNLayerMatrix.cuh">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="DNNLayerConvolution.cuh">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="DNNLayerSigmoid.cuh">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="DNNLayerMax.cuh">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="DNNLayerError.cuh">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="RandUtils.cuh">
+      <Filter>Utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

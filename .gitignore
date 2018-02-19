@@ -1,0 +1,17 @@
+
+.vs/DeeperThought/v15/.suo
+*.db
+*.opendb
+*.ipch
+*.pdb
+*.deps
+*.cache
+*.obj
+*.log
+*.lastbuildstate
+*.tlog
+*.txt
+*.dll
+*.exe
+*.csv
+*.ilk
