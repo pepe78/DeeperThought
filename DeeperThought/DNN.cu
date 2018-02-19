@@ -27,7 +27,7 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batc
 
 				if (parts[0].compare("convolution") == 0)
 				{
-					if (parts.size() != 10)
+					if (parts.size() != 9)
 					{
 						fprintf(stderr, "wrong setup of convolution layer!\n");
 						exit(-1);
@@ -35,14 +35,13 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batc
 					int numPics = convertToInt(parts[1]);
 					int x1 = convertToInt(parts[2]);
 					int x2 = convertToInt(parts[3]);
-					int outWidth = convertToInt(parts[4]);
-					int numConvo = convertToInt(parts[5]);
-					int y1 = convertToInt(parts[6]);
-					int y2 = convertToInt(parts[7]);
-					float initVal = convertToFloat(parts[8]);
-					float stepSize = convertToFloat(parts[9]);
+					int numConvo = convertToInt(parts[4]);
+					int y1 = convertToInt(parts[5]);
+					int y2 = convertToInt(parts[6]);
+					float initVal = convertToFloat(parts[7]);
+					float stepSize = convertToFloat(parts[8]);
 
-					DNNLayer *curLayer = new DNNLayerConvolution(numPics, x1, x2, outWidth, numConvo, y1, y2, batchSize, initVal, stepSize);
+					DNNLayer *curLayer = new DNNLayerConvolution(numPics, x1, x2, numConvo, y1, y2, batchSize, initVal, stepSize);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("matrix") == 0)
@@ -74,15 +73,18 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batc
 				}
 				else if (parts[0].compare("max") == 0)
 				{
-					if (parts.size() != 3)
+					if (parts.size() != 6)
 					{
 						fprintf(stderr, "wrong setup of max layer!\n");
 						exit(-1);
 					}
-					int inpWidth = convertToInt(parts[1]);
-					int outpWidth = convertToInt(parts[2]);
+					int numPics = convertToInt(parts[1]);
+					int x1 = convertToInt(parts[2]);
+					int x2 = convertToInt(parts[3]);
+					int d1 = convertToInt(parts[4]);
+					int d2 = convertToInt(parts[5]);
 
-					DNNLayer *curLayer = new DNNLayerMax(inpWidth, outpWidth, batchSize);
+					DNNLayer *curLayer = new DNNLayerMax(numPics, x1, x2, d1, d2, batchSize);
 					layers.push_back(curLayer);
 				}
 
@@ -129,7 +131,7 @@ void DNN::Train()
 {
 	while (true)
 	{
-		printf("Epoch %d ", epoch);
+		printf("Epoch %d \n", epoch);
 		TrainEpoch();
 		Test();
 		SaveToFile();
@@ -218,10 +220,13 @@ void DNN::TrainEpoch()
 	int correct = 0;
 	for (int i = 0; i < trainSet->GetNumBatches(); i++)
 	{
-		ret += TrainBatch(i);
-		correct += ComputeCorrect(trainSet->GetBatchNumber(i)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
+		double curErr = TrainBatch(i);
+		ret += curErr;
+		int curCorrect = ComputeCorrect(trainSet->GetBatchNumber(i)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
+		correct += curCorrect;
+		printf("Train Batch %d CurError %lf (%d) Error %lf (%d)\n", i, curErr, curCorrect, ret, correct);
 	}
-	printf("TrainError %lf (%d) ", ret, correct);
+	printf("TrainError %lf (%d)\n", ret, correct);
 	string txt = convertToString(epoch) + ((string)",") + convertToString((float)ret / (trainSet->GetNumSamples() + 0.0f)) + ((string)",") + convertToString(correct / (trainSet->GetNumSamples() + 0.0f)) + ((string)",");
 	AppendToFile("debug.csv", txt);
 }
@@ -232,8 +237,11 @@ void DNN::Test()
 	int correct = 0;
 	for (int i = 0; i < testSet->GetNumBatches(); i++)
 	{
-		ret += TestBatch(i);
-		correct += ComputeCorrect(testSet->GetBatchNumber(i)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
+		double curErr = TestBatch(i);
+		ret += curErr;
+		int curCorrect = ComputeCorrect(testSet->GetBatchNumber(i)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
+		correct += curCorrect;
+		printf("Test Batch %d CurError %lf (%d) Error %lf (%d)\n", i, curErr, curCorrect, ret, correct);
 	}
 	printf("TestError %lf (%d)\n", ret, correct);
 	string txt = convertToString((float)ret / (testSet->GetNumSamples() + 0.0f)) + ((string)",") + convertToString(correct / (testSet->GetNumSamples()+ 0.0f)) + ((string)"\n");

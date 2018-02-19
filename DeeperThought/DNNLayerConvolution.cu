@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-#define MAXX1X2 2000
+#define MAXX1X2 5000
 #define MAXNUMCONVY1Y2 1000
 
 __global__ void convolution_forward(float *outp, const float *inp, const float *pars, int numPics, int inputWidth, int outputWidth, int numConvolutions, int x1, int x2, int y1, int y2, int batchSize)
@@ -98,8 +98,8 @@ __global__ void convolution_backward(float *dinp, float *dpars, const float *dou
 	}
 }
 
-DNNLayerConvolution::DNNLayerConvolution(int _numPics, int _x1, int _x2, int _outputWidth, int _numConvolutions, int _y1, int _y2, int _batchSize, float _initVal, float _stepSize)
-	: DNNLayer(_batchSize, _numPics * _x1 * _x2, _outputWidth, _numConvolutions * _y1 * _y2, _initVal, _stepSize)
+DNNLayerConvolution::DNNLayerConvolution(int _numPics, int _x1, int _x2, int _numConvolutions, int _y1, int _y2, int _batchSize, float _initVal, float _stepSize)
+	: DNNLayer(_batchSize, _numPics * _x1 * _x2, _numPics * (_x1 - _y1 + 1) * (_x2 - _y2 + 1) * _numConvolutions, _numConvolutions * _y1 * _y2, _initVal, _stepSize)
 {
 	x1 = _x1;
 	x2 = _x2;
@@ -107,12 +107,6 @@ DNNLayerConvolution::DNNLayerConvolution(int _numPics, int _x1, int _x2, int _ou
 	y2 = _y2;
 	numPics = _numPics;
 	numConvolutions = _numConvolutions;
-
-	if (numPics * (x1 - y1 + 1) * (x2 - y2 + 1) * numConvolutions != outputWidth)
-	{
-		fprintf(stderr, "convolution layer parameters wrong!\n");
-		exit(-1);
-	}
 
 	if (numPics * x1 * x2 > MAXX1X2)
 	{

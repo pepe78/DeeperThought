@@ -4,58 +4,78 @@
 #include <cstdio>
 #include <cfloat>
 
-__global__ void max_forward(float *outp, const float *inp, int inputWidth, int outputWidth, int batchSize)
+__global__ void max_forward(float *outp, const float *inp, int numPics, int x1, int x2, int d1, int d2, int batchSize)
 {
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
 	if (tid < batchSize)
 	{
-		for (int i = 0; i < outputWidth; i++)
+		for (int p = 0; p < numPics; p++)
 		{
-			float tmp = -FLT_MAX;
-			for (int j = 0; j < inputWidth / outputWidth; j++)
+			for (int i1 = 0; i1 < x1/d1; i1++)
 			{
-				if (tmp < inp[tid * inputWidth + i * (inputWidth / outputWidth) + j])
+				for (int i2 = 0; i2 < x2 / d2; i2++)
 				{
-					tmp = inp[tid * inputWidth + i * (inputWidth / outputWidth) + j];
+					float tmp = -FLT_MAX;
+					for (int j1 = 0; j1 < d1; j1++)
+					{
+						for (int j2 = 0; j2 < d2; j2++)
+						{
+							if (tmp < inp[tid * numPics * x1 * x2 + p * x1 * x2 + (i1 * d1 + j1) * x2 + (i2 * d2 + j2)])
+							{
+								tmp = inp[tid * numPics * x1 * x2 + p * x1 * x2 + (i1 * d1 + j1) * x2 + (i2 * d2 + j2)];
+							}
+						}
+					}
+					outp[tid * numPics * (x1 / d1) * (x2 / d2) + p * (x1 / d1) * (x2 / d2) + i1 * (x2 / d2) + i2] = tmp;
 				}
 			}
-			outp[tid * outputWidth + i] = tmp;
 		}
 	}
 }
 
-__global__ void max_backward(float *dinp, const float *doutp, const float *outp, const float *inp, int inputWidth, int outputWidth, int batchSize)
+__global__ void max_backward(float *dinp, const float *doutp, const float *outp, const float *inp, int numPics, int x1, int x2, int d1, int d2, int batchSize)
 {
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
 	if (tid < batchSize)
 	{
-		for (int i = 0; i < outputWidth; i++)
+		for (int p = 0; p < numPics; p++)
 		{
-			float tmp = -FLT_MAX;
-			int pos = -1;
-			for (int j = 0; j < inputWidth / outputWidth; j++)
+			for (int i1 = 0; i1 < x1 / d1; i1++)
 			{
-				if (tmp < inp[tid * inputWidth + i * (inputWidth / outputWidth) + j])
+				for (int i2 = 0; i2 < x2 / d2; i2++)
 				{
-					tmp = inp[tid * inputWidth + i * (inputWidth / outputWidth) + j];
-					pos = j;
+					float tmp = -FLT_MAX;
+					int pos1 = -1;
+					int pos2 = -1;
+					for (int j1 = 0; j1 < d1; j1++)
+					{
+						for (int j2 = 0; j2 < d2; j2++)
+						{
+							if (tmp < inp[tid * numPics * x1 * x2 + p * x1 * x2 + (i1 * d1 + j1) * x2 + (i2 * d2 + j2)])
+							{
+								tmp = inp[tid * numPics * x1 * x2 + p * x1 * x2 + (i1 * d1 + j1) * x2 + (i2 * d2 + j2)];
+								pos1 = j1;
+								pos2 = j2;
+							}
+						}
+					}
+					dinp[tid * numPics * x1 * x2 + p * x1 * x2 + (i1 * d1 + pos1) * x2 + (i2 * d2 + pos2)] += doutp[tid * numPics * (x1 / d1) * (x2 / d2) + p * (x1 / d1) * (x2 / d2) + i1 * (x2 / d2) + i2];
 				}
 			}
-			dinp[tid * inputWidth + i * (inputWidth / outputWidth) + pos] += doutp[tid * outputWidth + i];
 		}
 	}
 }
 
-DNNLayerMax::DNNLayerMax(int _inputWidth, int _outputWidth, int _batchSize)
-	: DNNLayer(_batchSize, _inputWidth, _outputWidth, 0, 0, 0)
+DNNLayerMax::DNNLayerMax(int _numPics, int _x1, int _x2, int _d1, int _d2, int _batchSize)
+	: DNNLayer(_batchSize, _numPics * _x1 * _x2, _numPics * (_x1 / _d1) * (_x2 / _d2), 0, 0, 0)
 {
-	if (inputWidth % outputWidth != 0)
-	{
-		fprintf(stderr, "max layer parameters wrong!\n");
-		exit(-1);
-	}
+	numPics = _numPics;
+	x1 = _x1;
+	x2 = _x2;
+	d1 = _d1;
+	d2 = _d2;
 }
 
 DNNLayerMax::~DNNLayerMax()
@@ -68,7 +88,7 @@ void DNNLayerMax::Forward(CPUGPUMemory* input)
 	int threadsPerBlock = 256;
 	int numBlocks = ((input->GetSize() / inputWidth) + threadsPerBlock - 1) / threadsPerBlock;
 	max_forward<<<numBlocks, threadsPerBlock>>>(
-		(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), inputWidth, outputWidth, (input->GetSize() / inputWidth));
+		(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), numPics, x1, x2, d1, d2, (input->GetSize() / inputWidth));
 }
 
 void DNNLayerMax::Backward(CPUGPUMemory* input, CPUGPUMemory* deltaOutput)
@@ -76,5 +96,5 @@ void DNNLayerMax::Backward(CPUGPUMemory* input, CPUGPUMemory* deltaOutput)
 	int threadsPerBlock = 256;
 	int numBlocks = ((input->GetSize() / inputWidth) + threadsPerBlock - 1) / threadsPerBlock;
 	max_backward<<<numBlocks, threadsPerBlock>>>((float*)deltaInput->GetGPUMemory(), (float*)deltaOutput->GetGPUMemory(),
-		(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), inputWidth, outputWidth, (input->GetSize() / inputWidth));
+		(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), numPics, x1, x2, d1, d2, (input->GetSize() / inputWidth));
 }
