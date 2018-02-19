@@ -27,21 +27,22 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batc
 
 				if (parts[0].compare("convolution") == 0)
 				{
-					if (parts.size() != 9)
+					if (parts.size() != 10)
 					{
 						fprintf(stderr, "wrong setup of convolution layer!\n");
 						exit(-1);
 					}
-					int x1 = convertToInt(parts[1]);
-					int x2 = convertToInt(parts[2]);
-					int outWidth = convertToInt(parts[3]);
-					int numConvo = convertToInt(parts[4]);
-					int y1 = convertToInt(parts[5]);
-					int y2 = convertToInt(parts[6]);
-					float initVal = convertToFloat(parts[7]);
-					float stepSize = convertToFloat(parts[8]);
+					int numPics = convertToInt(parts[1]);
+					int x1 = convertToInt(parts[2]);
+					int x2 = convertToInt(parts[3]);
+					int outWidth = convertToInt(parts[4]);
+					int numConvo = convertToInt(parts[5]);
+					int y1 = convertToInt(parts[6]);
+					int y2 = convertToInt(parts[7]);
+					float initVal = convertToFloat(parts[8]);
+					float stepSize = convertToFloat(parts[9]);
 
-					DNNLayer *curLayer = new DNNLayerConvolution(x1, x2, outWidth, numConvo, y1, y2, batchSize, initVal, stepSize);
+					DNNLayer *curLayer = new DNNLayerConvolution(numPics, x1, x2, outWidth, numConvo, y1, y2, batchSize, initVal, stepSize);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("matrix") == 0)
