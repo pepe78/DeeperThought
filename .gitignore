@@ -10,7 +10,6 @@
 *.log
 *.lastbuildstate
 *.tlog
-*.txt
 *.dll
 *.exe
 *.csv
