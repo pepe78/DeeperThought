@@ -108,10 +108,33 @@ void DNNLayer::MakeStep()
 {
 	if (params != NULL & dparams != NULL)
 	{
+		float sugStepSize = -1;
+		if (stepSize < 0)
+		{
+			params->CopyGPUtoCPU();
+			dparams->CopyGPUtoCPU();
+
+			double ps = 0;
+			double dps = 0;
+			float *p = (float*)params->GetCPUMemory();
+			float *dp = (float*)dparams->GetCPUMemory();
+			for (int i = 0; i < params->GetSize(); i++)
+			{
+				ps += abs(p[i]);
+				dps += abs(dp[i]);
+			}
+
+			sugStepSize = (-stepSize) * ((float)(ps + 0.01) / (dps + 0.01));
+			if (sugStepSize > (-stepSize))
+			{
+				sugStepSize = (-stepSize);
+			}
+		}
+
 		int threadsPerBlock = 256;
 		int numBlocks = (params->GetSize() + threadsPerBlock - 1) / threadsPerBlock;
 		make_step_kernel<<<numBlocks, threadsPerBlock>>>(
-			(float*)params->GetGPUMemory(), (float*)dparams->GetGPUMemory(), stepSize, params->GetSize());
+			(float*)params->GetGPUMemory(), (float*)dparams->GetGPUMemory(), stepSize < 0 ? sugStepSize : stepSize, params->GetSize());
 		WaitForGPUToFinish();
 	}
 }
