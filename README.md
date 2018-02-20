@@ -4,6 +4,12 @@ To run training:
 
 DeeperThought.exe configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer)
 
+## Input format:
+
+expOut_1, ... , expOut_n, inp_1, ... , inp_m
+
+For both trainFile and testFile (expOut - expected output, inp - input). One data point is one line.
+
 ## Results:
 
 ### configA.txt (logistic regression)
