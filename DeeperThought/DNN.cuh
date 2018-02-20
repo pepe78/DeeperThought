@@ -23,7 +23,7 @@ private:
 	double TestBatch(int batchNum);
 	void TrainEpoch();
 
-	void Forward(CPUGPUMemory *firstInput);
+	void Forward(CPUGPUMemory *firstInput, bool isTrain);
 	void BackWard(CPUGPUMemory *firstInput);
 
 	int ComputeCorrect(CPUGPUMemory *expected_output, CPUGPUMemory *output);

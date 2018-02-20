@@ -5,6 +5,7 @@
 #include "DNNLayerMatrix.cuh"
 #include "DNNLayerMax.cuh"
 #include "DNNLayerSigmoid.cuh"
+#include "DNNLayerDropout.cuh"
 
 #include <fstream>
 #include <string>
@@ -70,6 +71,19 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 					int inpWidth = convertToInt(parts[1]);
 
 					DNNLayer *curLayer = new DNNLayerSigmoid(inpWidth, _batchSize);
+					layers.push_back(curLayer);
+				}
+				else if (parts[0].compare("dropout") == 0)
+				{
+					if (parts.size() != 3)
+					{
+						fprintf(stderr, "wrong setup of dropout layer!\n");
+						exit(-1);
+					}
+					int inpWidth = convertToInt(parts[1]);
+					float perc = convertToFloat(parts[2]);
+
+					DNNLayer *curLayer = new DNNLayerDropout(inpWidth, _batchSize, perc);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("max") == 0)
@@ -140,10 +154,18 @@ void DNN::Train()
 	}
 }
 
-void DNN::Forward(CPUGPUMemory *firstInput)
+void DNN::Forward(CPUGPUMemory *firstInput, bool isTrain)
 {
 	for (size_t i = 0; i < layers.size(); i++)
 	{
+		if (isTrain)
+		{
+			layers[i]->SetTrainRun();
+		}
+		else
+		{
+			layers[i]->SetTestRun();
+		}
 		layers[i]->Forward(i == 0 ? firstInput : layers[i - 1]->GetOutput());
 		WaitForGPUToFinish();
 	}
@@ -153,6 +175,7 @@ void DNN::BackWard(CPUGPUMemory *firstInput)
 {
 	for (int i = (int)layers.size() - 1; i >= 0; i--)
 	{
+		layers[i]->SetTrainRun();
 		layers[i]->ResetDeltaInput();
 		layers[i]->Backward(i == 0 ? firstInput : layers[i - 1]->GetOutput(), i == layers.size() - 1 ? errorLayer->GetDeltaInput() : layers[i + 1]->GetDeltaInput());
 		WaitForGPUToFinish();
@@ -202,7 +225,7 @@ int DNN::ComputeCorrect(CPUGPUMemory *expected_output, CPUGPUMemory *output)
 
 double DNN::TrainBatch(int batchNum)
 {
-	Forward(trainSet->GetBatchNumber(batchNum)->GetInputs());
+	Forward(trainSet->GetBatchNumber(batchNum)->GetInputs(), true);
 	double ret = errorLayer->ComputeError(layers[layers.size() - 1]->GetOutput(), trainSet->GetBatchNumber(batchNum)->GetOutputs());
 	BackWard(trainSet->GetBatchNumber(batchNum)->GetInputs());
 
@@ -211,7 +234,7 @@ double DNN::TrainBatch(int batchNum)
 
 double DNN::TestBatch(int batchNum)
 {
-	Forward(testSet->GetBatchNumber(batchNum)->GetInputs());
+	Forward(testSet->GetBatchNumber(batchNum)->GetInputs(), false);
 	return errorLayer->ComputeError(layers[layers.size() - 1]->GetOutput(), testSet->GetBatchNumber(batchNum)->GetOutputs());
 }
 

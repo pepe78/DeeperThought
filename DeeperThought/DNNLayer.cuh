@@ -16,6 +16,8 @@ protected:
 	CPUGPUMemory* output;
 	CPUGPUMemory* params;
 	CPUGPUMemory* dparams;
+
+	bool trainRun;
 public:
 	DNNLayer(int _batchSize, int _inputWidth, int _outputWidth, int _numParams, float _initVal, float _stepSize);
 	~DNNLayer();
@@ -32,6 +34,9 @@ public:
 	void MakeStep();
 
 	void RemoveDeltaInput();
+
+	void SetTrainRun();
+	void SetTestRun();
 };
 
 #endif

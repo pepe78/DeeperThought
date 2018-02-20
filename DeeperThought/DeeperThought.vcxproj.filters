@@ -35,6 +35,9 @@
     <CudaCompile Include="RandUtils.cu">
       <Filter>Utils</Filter>
     </CudaCompile>
+    <CudaCompile Include="DNNLayerDropout.cu">
+      <Filter>Layers</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Utils">
@@ -80,6 +83,9 @@
     </ClInclude>
     <ClInclude Include="RandUtils.cuh">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="DNNLayerDropout.cuh">
+      <Filter>Layers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

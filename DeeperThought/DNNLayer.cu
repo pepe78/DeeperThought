@@ -124,3 +124,13 @@ void DNNLayer::RemoveDeltaInput()
 		deltaInput = NULL;
 	}
 }
+
+void DNNLayer::SetTrainRun()
+{
+	trainRun = true;
+}
+
+void DNNLayer::SetTestRun()
+{
+	trainRun = false;
+}

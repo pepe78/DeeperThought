@@ -92,6 +92,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="DNN.cu" />
     <CudaCompile Include="DNNLayer.cu" />
     <CudaCompile Include="DNNLayerConvolution.cu" />
+    <CudaCompile Include="DNNLayerDropout.cu" />
     <CudaCompile Include="DNNLayerError.cu" />
     <CudaCompile Include="DNNLayerMatrix.cu" />
     <CudaCompile Include="DNNLayerMax.cu" />
@@ -108,6 +109,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="DNN.cuh" />
     <ClInclude Include="DNNLayer.cuh" />
     <ClInclude Include="DNNLayerConvolution.cuh" />
+    <ClInclude Include="DNNLayerDropout.cuh" />
     <ClInclude Include="DNNLayerError.cuh" />
     <ClInclude Include="DNNLayerMatrix.cuh" />
     <ClInclude Include="DNNLayerMax.cuh" />
