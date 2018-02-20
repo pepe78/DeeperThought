@@ -31,8 +31,9 @@ private:
 	void LoadFromFile(string &paramFile);
 
 	int epoch;
+	int saveEvery;
 public:
-	DNN(string &configFile, string &trainSetFile, string &testSetFile, int batchSize, string &paramFile);
+	DNN(string &configFile, string &trainSetFile, string &testSetFile, int _batchSize, string &paramFile, int _saveEvery);
 	~DNN();
 
 	void Train();

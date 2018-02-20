@@ -19,7 +19,9 @@ int main(int argc, char *argv[])
 	string batchSizeStr = (string)argv[4];
 	string paramFile = (string)argv[5];
 	int batchSize = convertToInt(batchSizeStr);
-	DNN *dnn = new DNN(configFile, trainFile, testFile, batchSize, paramFile);
+	string saveEveryStr = (string)argv[6];
+	int saveEvery = convertToInt(saveEveryStr);
+	DNN *dnn = new DNN(configFile, trainFile, testFile, batchSize, paramFile, saveEvery);
 
 	for (int r = 0; r < 1000000; r++)
 	{

@@ -11,8 +11,9 @@
 
 using namespace std;
 
-DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batchSize, string &paramFile)
+DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _batchSize, string &paramFile, int _saveEvery)
 {
+	saveEvery = _saveEvery;
 	ifstream is(configFile);
 	if (is.is_open())
 	{
@@ -41,7 +42,7 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batc
 					float initVal = convertToFloat(parts[7]);
 					float stepSize = convertToFloat(parts[8]);
 
-					DNNLayer *curLayer = new DNNLayerConvolution(numPics, x1, x2, numConvo, y1, y2, batchSize, initVal, stepSize);
+					DNNLayer *curLayer = new DNNLayerConvolution(numPics, x1, x2, numConvo, y1, y2, _batchSize, initVal, stepSize);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("matrix") == 0)
@@ -56,7 +57,7 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batc
 					float initVal = convertToFloat(parts[3]);
 					float stepSize = convertToFloat(parts[4]);
 
-					DNNLayer *curLayer = new DNNLayerMatrix(inpWidth, outpWidth, batchSize, initVal, stepSize);
+					DNNLayer *curLayer = new DNNLayerMatrix(inpWidth, outpWidth, _batchSize, initVal, stepSize);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("sigmoid") == 0)
@@ -68,7 +69,7 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batc
 					}
 					int inpWidth = convertToInt(parts[1]);
 
-					DNNLayer *curLayer = new DNNLayerSigmoid(inpWidth, batchSize);
+					DNNLayer *curLayer = new DNNLayerSigmoid(inpWidth, _batchSize);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("max") == 0)
@@ -84,7 +85,7 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batc
 					int d1 = convertToInt(parts[4]);
 					int d2 = convertToInt(parts[5]);
 
-					DNNLayer *curLayer = new DNNLayerMax(numPics, x1, x2, d1, d2, batchSize);
+					DNNLayer *curLayer = new DNNLayerMax(numPics, x1, x2, d1, d2, _batchSize);
 					layers.push_back(curLayer);
 				}
 
@@ -96,10 +97,10 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int batc
 			}
 		}
 	}
-	trainSet = new DataSet(trainSetFile, layers[0]->GetInputWidth(), true, layers[layers.size() - 1]->GetOutputWidth(), true, batchSize);
-	testSet = new DataSet(testSetFile, layers[0]->GetInputWidth(), true, layers[layers.size() - 1]->GetOutputWidth(), true, batchSize);
+	trainSet = new DataSet(trainSetFile, layers[0]->GetInputWidth(), true, layers[layers.size() - 1]->GetOutputWidth(), true, _batchSize);
+	testSet = new DataSet(testSetFile, layers[0]->GetInputWidth(), true, layers[layers.size() - 1]->GetOutputWidth(), true, _batchSize);
 
-	errorLayer = new DNNLayerError(layers[layers.size() - 1]->GetOutputWidth(), batchSize);
+	errorLayer = new DNNLayerError(layers[layers.size() - 1]->GetOutputWidth(), _batchSize);
 
 	epoch = 0;
 
@@ -250,19 +251,22 @@ void DNN::Test()
 
 void DNN::SaveToFile()
 {
-	string filename = "params_";
-	filename += convertToString(epoch);
-	filename += ".bin";
-	ofstream os(filename, ios::out | ios::binary);
-	for (size_t i = 0; i < layers.size(); i++)
+	if (epoch % saveEvery == 0)
 	{
-		CPUGPUMemory *m = layers[i]->GetParams();
-		if (m != NULL)
+		string filename = "params_";
+		filename += convertToString(epoch);
+		filename += ".bin";
+		ofstream os(filename, ios::out | ios::binary);
+		for (size_t i = 0; i < layers.size(); i++)
 		{
-			m->SaveToFile(os);
+			CPUGPUMemory *m = layers[i]->GetParams();
+			if (m != NULL)
+			{
+				m->SaveToFile(os);
+			}
 		}
+		os.close();
 	}
-	os.close();
 }
 
 void DNN::LoadFromFile(string &paramFile)
