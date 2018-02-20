@@ -12,7 +12,7 @@ DeeperThought.exe configFile trainFile testFile batchSize(integer) paramFile/nul
 
 > sigmoid,10
 
-![graphA](./results/graphA.png)
+![graphA](./results/graph_A.png)
 
 Accuracy: 92.47 % (on test data)
 
@@ -28,6 +28,6 @@ Accuracy: 92.47 % (on test data)
 
 > sigmoid,10
 
-![graphB](./results/graphB.png)
+![graphB](./results/graph_B.png)
 
 Accuracy: 96.24 % (on test data)
