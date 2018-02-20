@@ -51,8 +51,11 @@ void DNNLayerSigmoid::Forward(CPUGPUMemory* input)
 
 void DNNLayerSigmoid::Backward(CPUGPUMemory* input, CPUGPUMemory* deltaOutput)
 {
-	int threadsPerBlock = 256;
-	int numBlocks = ((input->GetSize() / inputWidth) + threadsPerBlock - 1) / threadsPerBlock;
-	sigmoid_backward<<<numBlocks, threadsPerBlock>>>((float*)deltaInput->GetGPUMemory(), (float*)deltaOutput->GetGPUMemory(),
-		(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), inputWidth, (input->GetSize() / inputWidth));
+	if (deltaInput != NULL)
+	{
+		int threadsPerBlock = 256;
+		int numBlocks = ((input->GetSize() / inputWidth) + threadsPerBlock - 1) / threadsPerBlock;
+		sigmoid_backward << <numBlocks, threadsPerBlock >> > ((float*)deltaInput->GetGPUMemory(), (float*)deltaOutput->GetGPUMemory(),
+			(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), inputWidth, (input->GetSize() / inputWidth));
+	}
 }

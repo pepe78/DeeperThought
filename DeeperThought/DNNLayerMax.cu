@@ -93,8 +93,11 @@ void DNNLayerMax::Forward(CPUGPUMemory* input)
 
 void DNNLayerMax::Backward(CPUGPUMemory* input, CPUGPUMemory* deltaOutput)
 {
-	int threadsPerBlock = 256;
-	int numBlocks = ((input->GetSize() / inputWidth) + threadsPerBlock - 1) / threadsPerBlock;
-	max_backward<<<numBlocks, threadsPerBlock>>>((float*)deltaInput->GetGPUMemory(), (float*)deltaOutput->GetGPUMemory(),
-		(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), numPics, x1, x2, d1, d2, (input->GetSize() / inputWidth));
+	if (deltaInput != NULL)
+	{
+		int threadsPerBlock = 256;
+		int numBlocks = ((input->GetSize() / inputWidth) + threadsPerBlock - 1) / threadsPerBlock;
+		max_backward << <numBlocks, threadsPerBlock >> > ((float*)deltaInput->GetGPUMemory(), (float*)deltaOutput->GetGPUMemory(),
+			(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), numPics, x1, x2, d1, d2, (input->GetSize() / inputWidth));
+	}
 }

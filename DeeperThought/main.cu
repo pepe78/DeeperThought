@@ -13,6 +13,12 @@ int main(int argc, char *argv[])
 	InitRand();
 	InitGPU();
 
+	if (argc != 7)
+	{
+		printf("DeeperThought.exe configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer)\n");
+		exit(-1);
+	}
+
 	string configFile = (string)argv[1];
 	string trainFile = (string)argv[2];
 	string testFile = (string)argv[3];
