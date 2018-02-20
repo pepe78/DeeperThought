@@ -34,8 +34,8 @@ DNNLayer::DNNLayer(int _batchSize, int _inputWidth, int _outputWidth, int _numPa
 	}
 	else
 	{
-		params = new CPUGPUMemory(true, numParams * _batchSize, _initVal);
-		dparams = new CPUGPUMemory(true, numParams * _batchSize, 0);
+		params = new CPUGPUMemory(true, numParams, _initVal);
+		dparams = new CPUGPUMemory(true, numParams, 0);
 	}
 }
 
