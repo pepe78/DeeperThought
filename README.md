@@ -81,3 +81,23 @@ Accuracy: 96.33 % (on test data)
 ![graphDlog](./results/graphDlog.png)
 
 Accuracy: 96.73 % (on test data)
+
+### configE.txt (convolutional neural network CNN) + log loss function training
+
+> convolution,1,28,28,200,5,5,0.5,-0.001
+
+> max,200,24,24,8,8
+
+> matrix,1800,100,0.5,-0.001
+
+> sigmoid,100
+
+> dropout,100,0.25
+
+> matrix,100,10,0.5,-0.001
+
+> sigmoid,10
+
+![graphE](./results/graphE.png)
+
+Accuracy: 99.13 % (on test data)
