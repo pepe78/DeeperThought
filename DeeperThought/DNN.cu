@@ -102,6 +102,11 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 					DNNLayer *curLayer = new DNNLayerMax(numPics, x1, x2, d1, d2, _batchSize);
 					layers.push_back(curLayer);
 				}
+				else
+				{
+					fprintf(stderr, "type of layer %s not implemented yet!\n", parts[0].c_str());
+					exit(-1);
+				}
 
 				if (layers.size() > 1 && layers[layers.size() - 2]->GetOutputWidth() != layers[layers.size() - 1]->GetInputWidth())
 				{
