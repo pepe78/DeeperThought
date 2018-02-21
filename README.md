@@ -22,6 +22,16 @@ For both trainFile and testFile (expOut - expected output, inp - input). One dat
 
 Accuracy: 92.47 % (on test data)
 
+### configC.txt (logistic regression & auto step size - less epochs needed)
+
+> matrix,784,10,0.5,-0.001
+
+> sigmoid,10
+
+![graphC](./results/graphC.png)
+
+Accuracy: 92.53 % (on test data)
+
 ### configB.txt (simple 2 layered network with dropout)
 
 > matrix,784,100,0.5,0.001
@@ -37,16 +47,6 @@ Accuracy: 92.47 % (on test data)
 ![graphB](./results/graph_B.png)
 
 Accuracy: 96.24 % (on test data)
-
-### configC.txt (logistic regression & auto step size - less epochs needed)
-
-> matrix,784,10,0.5,-0.001
-
-> sigmoid,10
-
-![graphC](./results/graphC.png)
-
-Accuracy: 92.53 % (on test data)
 
 ### configD.txt (simple 2 layered network with dropout & auto step size - less epochs needed)
 
