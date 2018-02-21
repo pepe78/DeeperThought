@@ -2,7 +2,7 @@
 
 To run training:
 
-DeeperThought.exe configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer)
+DeeperThought.exe configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer) square/log
 
 ## Input format:
 
@@ -63,3 +63,19 @@ Accuracy: 92.53 % (on test data)
 ![graphD](./results/graphD.png)
 
 Accuracy: 96.33 % (on test data)
+
+### configD.txt + log loss function training
+
+> matrix,784,100,0.5,-0.01
+
+> sigmoid,100
+
+> dropout,100,0.25
+
+> matrix,100,10,0.5,-0.01
+
+> sigmoid,10
+
+![graphDlog](./results/graphDlog.png)
+
+Accuracy: 96.73 % (on test data)
