@@ -10,6 +10,8 @@ expOut_1, ... , expOut_n, inp_1, ... , inp_m
 
 For both trainFile and testFile (expOut - expected output, inp - input). One data point is one line.
 
+You can download [MNIST dataset here](https://www.dropbox.com/s/9eoiignb7tlrr2u/mnist.zip?dl=0).
+
 ## Results for MNIST dataset:
 
 ### configA.txt (logistic regression)
