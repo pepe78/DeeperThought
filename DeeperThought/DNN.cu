@@ -240,15 +240,24 @@ double DNN::TestBatch(int batchNum)
 
 void DNN::TrainEpoch()
 {
-	double ret = 0;
-	int correct = 0;
+	vector<int> batchesToDo;
 	for (int i = 0; i < trainSet->GetNumBatches(); i++)
 	{
-		double curErr = TrainBatch(i);
+		batchesToDo.push_back(i);
+	}
+
+	double ret = 0;
+	int correct = 0;
+	while(batchesToDo.size() !=0)
+	{
+		int which = rand() % batchesToDo.size();
+		int bn = batchesToDo[which];
+		batchesToDo.erase(batchesToDo.begin() + which);
+		double curErr = TrainBatch(bn);
 		ret += curErr;
-		int curCorrect = ComputeCorrect(trainSet->GetBatchNumber(i)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
+		int curCorrect = ComputeCorrect(trainSet->GetBatchNumber(bn)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
 		correct += curCorrect;
-		printf("Train Batch %d CurError %lf (%d) Error %lf (%d)\n", i, curErr, curCorrect, ret, correct);
+		printf("Train Batch %d CurError %lf (%d) Error %lf (%d)\n", bn, curErr, curCorrect, ret, correct);
 	}
 	printf("TrainError %lf (%d)\n", ret, correct);
 	string txt = convertToString(epoch) + ((string)",") + convertToString((float)ret / (trainSet->GetNumSamples() + 0.0f)) + ((string)",") + convertToString(correct / (trainSet->GetNumSamples() + 0.0f)) + ((string)",");
