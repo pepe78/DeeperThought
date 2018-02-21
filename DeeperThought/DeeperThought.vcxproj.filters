@@ -38,6 +38,12 @@
     <CudaCompile Include="DNNLayerDropout.cu">
       <Filter>Layers</Filter>
     </CudaCompile>
+    <CudaCompile Include="DNNLayerRelu.cu">
+      <Filter>Layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="DNNLayerSoftMax.cu">
+      <Filter>Layers</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Utils">
@@ -85,6 +91,12 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="DNNLayerDropout.cuh">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="DNNLayerRelu.cuh">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="DNNLayerSoftMax.cuh">
       <Filter>Layers</Filter>
     </ClInclude>
   </ItemGroup>

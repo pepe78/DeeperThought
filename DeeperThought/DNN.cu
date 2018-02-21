@@ -5,6 +5,8 @@
 #include "DNNLayerMatrix.cuh"
 #include "DNNLayerMax.cuh"
 #include "DNNLayerSigmoid.cuh"
+#include "DNNLayerSoftMax.cuh"
+#include "DNNLayerRelu.cuh"
 #include "DNNLayerDropout.cuh"
 
 #include <fstream>
@@ -71,6 +73,30 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 					int inpWidth = convertToInt(parts[1]);
 
 					DNNLayer *curLayer = new DNNLayerSigmoid(inpWidth, _batchSize);
+					layers.push_back(curLayer);
+				}
+				else if (parts[0].compare("relu") == 0)
+				{
+					if (parts.size() != 2)
+					{
+						fprintf(stderr, "wrong setup of relu layer!\n");
+						exit(-1);
+					}
+					int inpWidth = convertToInt(parts[1]);
+
+					DNNLayer *curLayer = new DNNLayerRelu(inpWidth, _batchSize);
+					layers.push_back(curLayer);
+				}
+				else if (parts[0].compare("softmax") == 0)
+				{
+					if (parts.size() != 2)
+					{
+						fprintf(stderr, "wrong setup of softmax layer!\n");
+						exit(-1);
+					}
+					int inpWidth = convertToInt(parts[1]);
+
+					DNNLayer *curLayer = new DNNLayerSoftMax(inpWidth, _batchSize);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("dropout") == 0)
