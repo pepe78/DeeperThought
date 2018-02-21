@@ -33,7 +33,7 @@ private:
 	int epoch;
 	int saveEvery;
 public:
-	DNN(string &configFile, string &trainSetFile, string &testSetFile, int _batchSize, string &paramFile, int _saveEvery);
+	DNN(string &configFile, string &trainSetFile, string &testSetFile, int _batchSize, string &paramFile, int _saveEvery, string &errorType);
 	~DNN();
 
 	void Train();

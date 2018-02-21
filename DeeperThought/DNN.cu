@@ -12,7 +12,7 @@
 
 using namespace std;
 
-DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _batchSize, string &paramFile, int _saveEvery)
+DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _batchSize, string &paramFile, int _saveEvery, string &errorType)
 {
 	saveEvery = _saveEvery;
 	ifstream is(configFile);
@@ -119,7 +119,7 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 	trainSet = new DataSet(trainSetFile, layers[0]->GetInputWidth(), true, layers[layers.size() - 1]->GetOutputWidth(), true, _batchSize);
 	testSet = new DataSet(testSetFile, layers[0]->GetInputWidth(), true, layers[layers.size() - 1]->GetOutputWidth(), true, _batchSize);
 
-	errorLayer = new DNNLayerError(layers[layers.size() - 1]->GetOutputWidth(), _batchSize);
+	errorLayer = new DNNLayerError(layers[layers.size() - 1]->GetOutputWidth(), _batchSize, errorType.compare("square") == 0);
 
 	epoch = 0;
 

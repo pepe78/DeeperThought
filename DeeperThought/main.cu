@@ -13,9 +13,9 @@ int main(int argc, char *argv[])
 	InitRand();
 	InitGPU();
 
-	if (argc != 7)
+	if (argc != 8)
 	{
-		printf("DeeperThought.exe configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer)\n");
+		printf("DeeperThought.exe configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer) square/log\n");
 		exit(-1);
 	}
 
@@ -26,8 +26,9 @@ int main(int argc, char *argv[])
 	string paramFile = (string)argv[5];
 	int batchSize = convertToInt(batchSizeStr);
 	string saveEveryStr = (string)argv[6];
+	string errorType = (string)argv[7];
 	int saveEvery = convertToInt(saveEveryStr);
-	DNN *dnn = new DNN(configFile, trainFile, testFile, batchSize, paramFile, saveEvery);
+	DNN *dnn = new DNN(configFile, trainFile, testFile, batchSize, paramFile, saveEvery, errorType);
 
 	for (int r = 0; r < 1000000; r++)
 	{
