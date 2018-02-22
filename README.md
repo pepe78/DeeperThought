@@ -1,4 +1,4 @@
-# DeeperThought
+# Deeper Thought
 
 To run training:
 
@@ -16,6 +16,8 @@ You can download [MNIST dataset here](https://www.dropbox.com/s/9eoiignb7tlrr2u/
 
 ### configA.txt (logistic regression)
 
+#### batch size 4000, squared error
+
 > matrix,784,10,0.5,0.0001
 
 > sigmoid,10
@@ -24,7 +26,9 @@ You can download [MNIST dataset here](https://www.dropbox.com/s/9eoiignb7tlrr2u/
 
 Accuracy: 92.47 % (on test data)
 
-### configC.txt (logistic regression & auto step size - less epochs needed)
+### configC.txt (logistic regression)
+
+#### batch size 4000, squared error, auto step size
 
 > matrix,784,10,0.5,-0.001
 
@@ -35,6 +39,8 @@ Accuracy: 92.47 % (on test data)
 Accuracy: 92.53 % (on test data)
 
 ### configB.txt (simple 2 layered network with dropout)
+
+#### batch size 4000, squared error
 
 > matrix,784,100,0.5,0.001
 
@@ -50,7 +56,9 @@ Accuracy: 92.53 % (on test data)
 
 Accuracy: 96.24 % (on test data)
 
-### configD.txt (simple 2 layered network with dropout & auto step size - less epochs needed)
+### configD.txt (simple 2 layered network with dropout)
+
+#### batch size 4000, squared error, auto step size
 
 > matrix,784,100,0.5,-0.01
 
@@ -66,7 +74,9 @@ Accuracy: 96.24 % (on test data)
 
 Accuracy: 96.33 % (on test data)
 
-### configD.txt + log loss function training
+### configD.txt
+
+#### batch size 4000, log loss error, auto step size
 
 > matrix,784,100,0.5,-0.01
 
@@ -83,6 +93,8 @@ Accuracy: 96.33 % (on test data)
 Accuracy: 96.73 % (on test data)
 
 ### configE.txt (convolutional neural network CNN) + log loss function training
+
+#### batch size 1000, log loss error, auto step size
 
 > convolution,1,28,28,200,5,5,0.5,-0.001
 
