@@ -4,7 +4,7 @@
 #include <cstdio>
 
 #define MAXX1X2 5000
-#define MAXNUMCONVY1Y2 5000
+#define MAXNUMCONVY1Y2 7500
 
 __global__ void convolution_forward(float *outp, const float *inp, const float *pars, int numPics, int inputWidth, int outputWidth, int numConvolutions, int x1, int x2, int y1, int y2, int batchSize)
 {

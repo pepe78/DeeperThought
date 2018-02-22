@@ -288,7 +288,7 @@ void DNN::TrainEpoch()
 		ret += curErr;
 		int curCorrect = ComputeCorrect(trainSet->GetBatchNumber(bn)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
 		correct += curCorrect;
-		printf("Train Batch %d CurError %lf (%d) Error %lf (%d)\n", bn, curErr, curCorrect, ret, correct);
+		printf("Train Batch %d (%d) CurError %lf (%d) Error %lf (%d)\n", bn, (int)batchesToDo.size(), curErr, curCorrect, ret, correct);
 	}
 	printf("TrainError %lf (%d)\n", ret, correct);
 	string txt = convertToString(epoch) + ((string)",") + convertToString((float)ret / (trainSet->GetNumSamples() + 0.0f)) + ((string)",") + convertToString(correct / (trainSet->GetNumSamples() + 0.0f)) + ((string)",");
