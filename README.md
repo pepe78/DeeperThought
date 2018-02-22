@@ -92,7 +92,7 @@ Accuracy: 96.33 % (on test data)
 
 Accuracy: 96.73 % (on test data)
 
-### configE.txt (convolutional neural network CNN) + log loss function training
+### configE.txt (convolutional neural network CNN)
 
 #### batch size 1000, log loss error, auto step size
 
@@ -113,3 +113,25 @@ Accuracy: 96.73 % (on test data)
 ![graphE](./results/graphE.png)
 
 Accuracy: 99.13 % (on test data)
+
+### configF.txt (convolutional neural network CNN)
+
+#### batch size 1000, log loss error, auto step size
+
+> convolution,1,28,28,400,5,5,0.5,-0.001
+
+> max,400,24,24,6,6
+
+> matrix,6400,150,0.5,-0.001
+
+> sigmoid,150
+
+> dropout,150,0.25
+
+> matrix,150,10,0.5,-0.001
+
+> softmax,10
+
+![graphF](./results/graphF.png)
+
+Accuracy: 99.33 % (on test data)
