@@ -145,3 +145,9 @@ Accuracy: 99.13 % (on test data)
 ![graphF](./results/graphF.png)
 
 Accuracy: 99.33 % (on test data)
+
+## You need to download and install:
+
+* For compilation: [Visual Studio Community](https://www.visualstudio.com/vs/community/)
+
+* CUDA for running on GPU: [CUDA](https://developer.nvidia.com/cuda-zone)
