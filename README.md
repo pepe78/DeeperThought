@@ -151,3 +151,13 @@ Accuracy: 99.33 % (on test data)
 * For compilation: [Visual Studio Community](https://www.visualstudio.com/vs/community/)
 
 * CUDA for running on GPU: [CUDA](https://developer.nvidia.com/cuda-zone)
+
+## Other alternatives for training DNNs:
+
+* [CNTK](https://github.com/Microsoft/CNTK)
+
+* [TensorFlow](https://www.tensorflow.org/)
+
+* [Caffe](http://caffe.berkeleyvision.org/)
+
+* [Torch](http://torch.ch/)
