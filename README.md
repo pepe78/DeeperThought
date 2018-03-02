@@ -1,10 +1,12 @@
 # Deeper Thought
 
-To run training:
+Deeper Thought is general framework for training Deep Neural Networks (and convolutional as well).
+
+To run training using your train and test data from command line execute:
 
 DeeperThought.exe configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer) square/log
 
-## Input format:
+## Input format of data:
 
 expOut_1, ... , expOut_n, inp_1, ... , inp_m
 
@@ -12,7 +14,7 @@ For both trainFile and testFile (expOut - expected output, inp - input). One dat
 
 You can download [MNIST dataset here](https://www.dropbox.com/s/9eoiignb7tlrr2u/mnist.zip?dl=0). Mnist dataset can be found in other formats on [Yann Lecun's web page](http://yann.lecun.com/exdb/mnist/index.html) or [Kaggle's web page](https://www.kaggle.com/c/digit-recognizer).
 
-Good research publications on the topic:
+## Good research publications on the topic:
 
 * N. Srivastava, G. Hinton, A. Krizhevsky, I. Sutskever, R. Salakhutdinov: [Dropout: A Simple Way to Prevent Neural Networks from Overfitting](http://www.jmlr.org/papers/volume15/srivastava14a/srivastava14a.pdf?utm_content=buffer79b43&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer), JMLR, 2014
 
@@ -146,11 +148,13 @@ Accuracy: 99.13 % (on test data)
 
 Accuracy: 99.33 % (on test data)
 
-## You need to download and install:
+## What you need to download and install beforehand:
 
 * For compilation: [Visual Studio Community](https://www.visualstudio.com/vs/community/)
 
 * CUDA for running on GPU: [CUDA](https://developer.nvidia.com/cuda-zone)
+
+* CUDA GPU card. The one used for MNIST training above is [GEFORCE GTX 1080 Ti](https://www.nvidia.com/en-us/geforce/products/10series/geforce-gtx-1080-ti/)
 
 ## Other alternatives for training DNNs:
 
