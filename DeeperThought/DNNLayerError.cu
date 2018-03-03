@@ -76,7 +76,7 @@ double DNNLayerError::ComputeError(CPUGPUMemory* output, CPUGPUMemory *expectedO
 	error->CopyGPUtoCPU();
 	double ret = 0.0;
 	float *m = (float*)error->GetCPUMemory();
-	for (int i = 0; i < inputWidth * batchSize; i++)
+	for (int i = 0; i < expectedOutput->GetSize(); i++)
 	{
 		ret += m[i];
 	}
