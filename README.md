@@ -148,6 +148,28 @@ Accuracy: 99.13 % (on test data)
 
 Accuracy: 99.33 % (on test data)
 
+### configG.txt (convolutional neural network CNN)
+
+#### batch size 1000, log loss error, auto step size
+
+> convolution,1,28,28,200,8,8,0.5,-0.001
+
+> max,200,21,21,7,7
+
+> matrix,1800,130,0.5,-0.001
+
+> sigmoid,130
+
+> dropout,130,0.5
+
+> matrix,130,10,0.5,-0.001
+
+> softmax,10
+
+![graphG](./results/graphG.png)
+
+Accuracy: 99.38 % (on test data)
+
 ## What you need to download and install beforehand:
 
 * For compilation: [Visual Studio Community](https://www.visualstudio.com/vs/community/)
