@@ -18,6 +18,10 @@ __global__ void dropout_forward(float *outp, const float *inp, const float *dom,
 		{
 			outp[tid * inputWidth + i] = inp[tid * inputWidth + i];
 		}
+		else
+		{
+			outp[tid * inputWidth + i] = 0;
+		}
 	}
 }
 
