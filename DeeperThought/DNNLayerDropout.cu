@@ -72,7 +72,7 @@ void DNNLayerDropout::Forward(CPUGPUMemory* input)
 	int threadsPerBlock = 256;
 	int numBlocks = ((input->GetSize() / inputWidth) * inputWidth + threadsPerBlock - 1) / threadsPerBlock;
 	dropout_forward<<<numBlocks, threadsPerBlock>>>(
-		(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), (float*)dom->GetGPUMemory(), (float) inputWidth, perc, (input->GetSize() / inputWidth) * inputWidth);
+		(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), (float*)dom->GetGPUMemory(), inputWidth, perc, (input->GetSize() / inputWidth) * inputWidth);
 }
 
 void DNNLayerDropout::Backward(CPUGPUMemory* input, CPUGPUMemory* deltaOutput)

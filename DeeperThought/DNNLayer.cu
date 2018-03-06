@@ -124,7 +124,7 @@ void DNNLayer::MakeStep()
 				dps += abs(dp[i]);
 			}
 
-			sugStepSize = (-stepSize) * ((float)(ps + 0.01) / (dps + 0.01));
+			sugStepSize = (float)(-stepSize) * ((float)(ps + 0.01) / (dps + 0.01));
 			if (sugStepSize > (-stepSize))
 			{
 				sugStepSize = (-stepSize);

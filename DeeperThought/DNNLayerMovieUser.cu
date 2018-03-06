@@ -59,7 +59,7 @@ __global__ void movieuser_backward(float *dparams, const float *doutp, const flo
 		for (int i = 0; i < vectorWidthUser; i++)
 		{
 			user[i] = params[numMovies *vectorWidthMovie + u * vectorWidthUser + i];
-			duser[i] = 0
+			duser[i] = 0;
 		}
 
 		for (int i = 0; i < vectorWidthMovie; i++)
