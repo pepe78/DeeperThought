@@ -140,19 +140,20 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 				}
 				else if (parts[0].compare("movieuser") == 0)
 				{
-					if (parts.size() != 6)
+					if (parts.size() != 7)
 					{
-						fprintf(stderr, "wrong setup of max layer!\n");
+						fprintf(stderr, "wrong setup of movieuser layer!\n");
 						exit(-1);
 					}
 					int numMovies = convertToInt(parts[1]);
 					int numUsers = convertToInt(parts[2]);
-					int vectorWidth = convertToInt(parts[3]);
-					float initVal = convertToFloat(parts[4]);
-					float stepSize = convertToFloat(parts[5]);
+					int vectorWidthMovie = convertToInt(parts[3]);
+					int vectorWidthUser = convertToInt(parts[4]);
+					float initVal = convertToFloat(parts[5]);
+					float stepSize = convertToFloat(parts[6]);
 
 					inputIsFloat = false;
-					DNNLayer *curLayer = new DNNLayerMovieUser(numMovies, numUsers, vectorWidth, initVal, stepSize, _batchSize);
+					DNNLayer *curLayer = new DNNLayerMovieUser(numMovies, numUsers, vectorWidthMovie, vectorWidthUser, initVal, stepSize, _batchSize);
 					layers.push_back(curLayer);
 				}
 				else
