@@ -6,8 +6,11 @@
 
 class DNNLayerSigmoid : public DNNLayer
 {
+private:
+	float o_min;
+	float o_max;
 public:
-	DNNLayerSigmoid(int _inputWidth, int _batchSize);
+	DNNLayerSigmoid(int _inputWidth, float _min, float _max, int _batchSize);
 	~DNNLayerSigmoid();
 
 	void Forward(CPUGPUMemory* input);

@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <cfloat>
 
-__global__ void sigmoid_forward(float *outp, const float *inp, int inputWidth, int batchSize)
+__global__ void sigmoid_forward(float *outp, const float *inp, int inputWidth, int batchSize, float o_min, float o_max)
 {
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
@@ -13,11 +13,11 @@ __global__ void sigmoid_forward(float *outp, const float *inp, int inputWidth, i
 		int i = tid % inputWidth;
 		tid = tid / inputWidth;
 
-		outp[tid * inputWidth + i] = 1.0f / (1.0f + exp(inp[tid * inputWidth + i]));
+		outp[tid * inputWidth + i] = o_min + (o_max - o_min) / (1.0f + exp(inp[tid * inputWidth + i]));
 	}
 }
 
-__global__ void sigmoid_backward(float *dinp, const float *doutp, const float *outp, const float *inp, int inputWidth, int batchSize)
+__global__ void sigmoid_backward(float *dinp, const float *doutp, const float *outp, const float *inp, int inputWidth, int batchSize, float o_min, float o_max)
 {
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
@@ -26,14 +26,16 @@ __global__ void sigmoid_backward(float *dinp, const float *doutp, const float *o
 		int i = tid % inputWidth;
 		tid = tid / inputWidth;
 
-		dinp[tid * inputWidth + i] = doutp[tid * inputWidth + i] * outp[tid * inputWidth + i] * (outp[tid * inputWidth + i] - 1.0f);
+		float tmp = (outp[tid * inputWidth + i] - o_min) / (o_max - o_min);
+		dinp[tid * inputWidth + i] = doutp[tid * inputWidth + i] * tmp * (tmp - 1.0f) * (o_max - o_min);
 	}
 }
 
-DNNLayerSigmoid::DNNLayerSigmoid(int _inputWidth, int _batchSize)
+DNNLayerSigmoid::DNNLayerSigmoid(int _inputWidth, float _min, float _max, int _batchSize)
 	: DNNLayer(_batchSize, _inputWidth, _inputWidth, 0, 0, 0)
 {
-
+	o_min = _min;
+	o_max = _max;
 }
 
 DNNLayerSigmoid::~DNNLayerSigmoid()
@@ -46,7 +48,7 @@ void DNNLayerSigmoid::Forward(CPUGPUMemory* input)
 	int threadsPerBlock = 256;
 	int numBlocks = ((input->GetSize() / inputWidth) * inputWidth + threadsPerBlock - 1) / threadsPerBlock;
 	sigmoid_forward<<<numBlocks, threadsPerBlock>>>(
-		(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), inputWidth, (input->GetSize() / inputWidth) * inputWidth);
+		(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), inputWidth, (input->GetSize() / inputWidth) * inputWidth, o_min, o_max);
 }
 
 void DNNLayerSigmoid::Backward(CPUGPUMemory* input, CPUGPUMemory* deltaOutput)
@@ -56,6 +58,6 @@ void DNNLayerSigmoid::Backward(CPUGPUMemory* input, CPUGPUMemory* deltaOutput)
 		int threadsPerBlock = 256;
 		int numBlocks = ((input->GetSize() / inputWidth) * inputWidth + threadsPerBlock - 1) / threadsPerBlock;
 		sigmoid_backward << <numBlocks, threadsPerBlock >> > ((float*)deltaInput->GetGPUMemory(), (float*)deltaOutput->GetGPUMemory(),
-			(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), inputWidth, (input->GetSize() / inputWidth) * inputWidth);
+			(float*)output->GetGPUMemory(), (float*)input->GetGPUMemory(), inputWidth, (input->GetSize() / inputWidth) * inputWidth, o_min, o_max);
 	}
 }

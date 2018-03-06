@@ -8,14 +8,16 @@
 #include "DNNLayerSoftMax.cuh"
 #include "DNNLayerRelu.cuh"
 #include "DNNLayerDropout.cuh"
+#include "DNNLayerMovieUser.cuh"
 
 #include <fstream>
 #include <string>
 
 using namespace std;
 
-DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _batchSize, string &paramFile, int _saveEvery, string &errorType)
+DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _batchSize, string &paramFile, int _saveEvery, string &errorType, string &_whereMax)
 {
+	bool inputIsFloat = true;
 	saveEvery = _saveEvery;
 	ifstream is(configFile);
 	if (is.is_open())
@@ -65,14 +67,22 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 				}
 				else if (parts[0].compare("sigmoid") == 0)
 				{
-					if (parts.size() != 2)
+					if (parts.size() != 2 && parts.size() != 4)
 					{
 						fprintf(stderr, "wrong setup of sigmoid layer!\n");
 						exit(-1);
 					}
 					int inpWidth = convertToInt(parts[1]);
+					float o_min = 0;
+					float o_max = 1;
 
-					DNNLayer *curLayer = new DNNLayerSigmoid(inpWidth, _batchSize);
+					if (parts.size() == 4)
+					{
+						o_min = convertToFloat(parts[2]);
+						o_min = convertToFloat(parts[3]);
+					}
+
+					DNNLayer *curLayer = new DNNLayerSigmoid(inpWidth, o_min, o_max, _batchSize);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("relu") == 0)
@@ -128,6 +138,23 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 					DNNLayer *curLayer = new DNNLayerMax(numPics, x1, x2, d1, d2, _batchSize);
 					layers.push_back(curLayer);
 				}
+				else if (parts[0].compare("movieuser") == 0)
+				{
+					if (parts.size() != 6)
+					{
+						fprintf(stderr, "wrong setup of max layer!\n");
+						exit(-1);
+					}
+					int numMovies = convertToInt(parts[1]);
+					int numUsers = convertToInt(parts[2]);
+					int vectorWidth = convertToInt(parts[3]);
+					float initVal = convertToFloat(parts[4]);
+					float stepSize = convertToFloat(parts[5]);
+
+					inputIsFloat = false;
+					DNNLayer *curLayer = new DNNLayerMovieUser(numMovies, numUsers, vectorWidth, initVal, stepSize, _batchSize);
+					layers.push_back(curLayer);
+				}
 				else
 				{
 					fprintf(stderr, "type of layer %s not implemented yet!\n", parts[0].c_str());
@@ -142,8 +169,8 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 			}
 		}
 	}
-	trainSet = new DataSet(trainSetFile, layers[0]->GetInputWidth(), true, layers[layers.size() - 1]->GetOutputWidth(), true, _batchSize);
-	testSet = new DataSet(testSetFile, layers[0]->GetInputWidth(), true, layers[layers.size() - 1]->GetOutputWidth(), true, _batchSize);
+	trainSet = new DataSet(trainSetFile, layers[0]->GetInputWidth(), inputIsFloat, layers[layers.size() - 1]->GetOutputWidth(), true, _batchSize);
+	testSet = new DataSet(testSetFile, layers[0]->GetInputWidth(), inputIsFloat, layers[layers.size() - 1]->GetOutputWidth(), true, _batchSize);
 
 	errorLayer = new DNNLayerError(layers[layers.size() - 1]->GetOutputWidth(), _batchSize, errorType.compare("square") == 0);
 
@@ -151,6 +178,9 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 
 	layers[0]->RemoveDeltaInput();
 	LoadFromFile(paramFile);
+
+	whereMax = _whereMax.compare("wheremax") == 0;
+	netflixRun = _whereMax.compare("netflix") == 0;
 }
 
 DNN::~DNN()
@@ -254,6 +284,35 @@ int DNN::ComputeCorrect(CPUGPUMemory *expected_output, CPUGPUMemory *output)
 	return ret;
 }
 
+double DNN::ComputeNetflix(CPUGPUMemory *expected_output, CPUGPUMemory *output)
+{
+	double ret = 0;
+	int numSamples = expected_output->GetSize();
+
+	expected_output->CopyGPUtoCPU();
+	output->CopyGPUtoCPU();
+
+	float* eo = (float*)expected_output->GetCPUMemory();
+	float* o = (float*)output->GetCPUMemory();
+	for (int i = 0; i < numSamples; i++)
+	{
+		float o1 = eo[i];
+		float o2 = o[i];
+		if (o2 < 1.0f)
+		{
+			o2 = 1.0f;
+		}
+		if (o2 > 5.0f)
+		{
+			o2 = 5.0f;
+		}
+
+		ret += (o1 - o2)*(o1 - o2);
+	}
+
+	return ret;
+}
+
 double DNN::TrainBatch(int batchNum)
 {
 	Forward(trainSet->GetBatchNumber(batchNum)->GetInputs(), true);
@@ -279,6 +338,7 @@ void DNN::TrainEpoch()
 
 	double ret = 0;
 	int correct = 0;
+	double netflix = 0;
 	while(batchesToDo.size() !=0)
 	{
 		int which = rand() % batchesToDo.size();
@@ -286,12 +346,21 @@ void DNN::TrainEpoch()
 		batchesToDo.erase(batchesToDo.begin() + which);
 		double curErr = TrainBatch(bn);
 		ret += curErr;
-		int curCorrect = ComputeCorrect(trainSet->GetBatchNumber(bn)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
+		int curCorrect = 0;
+		if (whereMax)
+		{
+			curCorrect = ComputeCorrect(trainSet->GetBatchNumber(bn)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
+		}
+		if (netflixRun)
+		{
+			netflix += ComputeNetflix(trainSet->GetBatchNumber(bn)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
+		}
 		correct += curCorrect;
 		printf("Train Batch %d (%d) CurError %lf (%d) Error %lf (%d)\n", bn, (int)batchesToDo.size(), curErr, curCorrect, ret, correct);
 	}
 	printf("TrainError %lf (%d)\n", ret, correct);
-	string txt = convertToString(epoch) + ((string)",") + convertToString((float)ret / (trainSet->GetNumSamples() + 0.0f)) + ((string)",") + convertToString(correct / (trainSet->GetNumSamples() + 0.0f)) + ((string)",");
+	string txt = convertToString(epoch) + ((string)",") + convertToString((float)ret / (trainSet->GetNumSamples() + 0.0f)) + ((string)",") + convertToString(correct / (trainSet->GetNumSamples() + 0.0f)) + ((string)",")
+		+ convertToString((float)sqrt(netflix / (trainSet->GetNumSamples() + 0.0f))) + ((string)",");
 	AppendToFile("debug.csv", txt);
 }
 
@@ -299,16 +368,26 @@ void DNN::Test()
 {
 	double ret = 0;
 	int correct = 0;
+	double netflix = 0;
 	for (int i = 0; i < testSet->GetNumBatches(); i++)
 	{
 		double curErr = TestBatch(i);
 		ret += curErr;
-		int curCorrect = ComputeCorrect(testSet->GetBatchNumber(i)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
+		int curCorrect = 0;
+		if (whereMax)
+		{
+			curCorrect = ComputeCorrect(testSet->GetBatchNumber(i)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
+		}
+		if (netflixRun)
+		{
+			netflix += ComputeNetflix(testSet->GetBatchNumber(i)->GetOutputs(), layers[layers.size() - 1]->GetOutput());
+		}
 		correct += curCorrect;
 		printf("Test Batch %d CurError %lf (%d) Error %lf (%d)\n", i, curErr, curCorrect, ret, correct);
 	}
 	printf("TestError %lf (%d)\n", ret, correct);
-	string txt = convertToString((float)ret / (testSet->GetNumSamples() + 0.0f)) + ((string)",") + convertToString(correct / (testSet->GetNumSamples()+ 0.0f)) + ((string)"\n");
+	string txt = convertToString((float)ret / (testSet->GetNumSamples() + 0.0f)) + ((string)",") + convertToString(correct / (testSet->GetNumSamples()+ 0.0f)) + ((string)",")
+		+ convertToString((float)sqrt(netflix / (testSet->GetNumSamples() + 0.0f))) + ((string)"\n");
 	AppendToFile("debug.csv", txt);
 }
 

@@ -96,6 +96,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <CudaCompile Include="DNNLayerError.cu" />
     <CudaCompile Include="DNNLayerMatrix.cu" />
     <CudaCompile Include="DNNLayerMax.cu" />
+    <CudaCompile Include="DNNLayerMovieUser.cu" />
     <CudaCompile Include="DNNLayerRelu.cu" />
     <CudaCompile Include="DNNLayerSigmoid.cu" />
     <CudaCompile Include="DNNLayerSoftMax.cu" />
@@ -115,6 +116,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="DNNLayerError.cuh" />
     <ClInclude Include="DNNLayerMatrix.cuh" />
     <ClInclude Include="DNNLayerMax.cuh" />
+    <ClInclude Include="DNNLayerMovieUser.cuh" />
     <ClInclude Include="DNNLayerRelu.cuh" />
     <ClInclude Include="DNNLayerSigmoid.cuh" />
     <ClInclude Include="DNNLayerSoftMax.cuh" />

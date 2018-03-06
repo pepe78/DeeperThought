@@ -27,13 +27,16 @@ private:
 	void BackWard(CPUGPUMemory *firstInput);
 
 	int ComputeCorrect(CPUGPUMemory *expected_output, CPUGPUMemory *output);
+	double ComputeNetflix(CPUGPUMemory *expected_output, CPUGPUMemory *output);
 	void SaveToFile();
 	void LoadFromFile(string &paramFile);
 
 	int epoch;
 	int saveEvery;
+	bool whereMax;
+	bool netflixRun;
 public:
-	DNN(string &configFile, string &trainSetFile, string &testSetFile, int _batchSize, string &paramFile, int _saveEvery, string &errorType);
+	DNN(string &configFile, string &trainSetFile, string &testSetFile, int _batchSize, string &paramFile, int _saveEvery, string &errorType, string &_whereMax);
 	~DNN();
 
 	void Train();

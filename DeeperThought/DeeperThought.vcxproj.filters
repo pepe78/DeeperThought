@@ -44,6 +44,9 @@
     <CudaCompile Include="DNNLayerSoftMax.cu">
       <Filter>Layers</Filter>
     </CudaCompile>
+    <CudaCompile Include="DNNLayerMovieUser.cu">
+      <Filter>Layers</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Utils">
@@ -97,6 +100,9 @@
       <Filter>Layers</Filter>
     </ClInclude>
     <ClInclude Include="DNNLayerSoftMax.cuh">
+      <Filter>Layers</Filter>
+    </ClInclude>
+    <ClInclude Include="DNNLayerMovieUser.cuh">
       <Filter>Layers</Filter>
     </ClInclude>
   </ItemGroup>
