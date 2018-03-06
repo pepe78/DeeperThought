@@ -10,12 +10,12 @@ __global__ void error_square_kernel(float *error, float *dinput, const float *ex
 
 	if (tid < batchSize)
 	{
-		int i = tid % inputWidth;
-		tid = tid / inputWidth;
-
-		float tmp = outp[tid * inputWidth + i] - expOutp[tid * inputWidth + i];
-		error[tid * inputWidth + i] = tmp * tmp;
-		dinput[tid * inputWidth + i] = 2.0f * tmp;
+		for (int i = 0; i < inputWidth; i++)
+		{
+			float tmp = outp[tid * inputWidth + i] - expOutp[tid * inputWidth + i];
+			error[tid * inputWidth + i] = tmp * tmp;
+			dinput[tid * inputWidth + i] = 2.0f * tmp;
+		}
 	}
 }
 
@@ -25,18 +25,18 @@ __global__ void error_log_kernel(float *error, float *dinput, const float *expOu
 
 	if (tid < batchSize)
 	{
-		int i = tid % inputWidth;
-		tid = tid / inputWidth;
-
-		if (expOutp[tid * inputWidth + i] > 0.5f)
+		for (int i = 0; i < inputWidth; i++)
 		{
-			error[tid * inputWidth + i] = -log(0.001f + outp[tid * inputWidth + i]);
-			dinput[tid * inputWidth + i] = -1.0f / (0.001f + outp[tid * inputWidth + i]);
-		}
-		else
-		{
-			error[tid * inputWidth + i] = -log(1.001f - outp[tid * inputWidth + i]);
-			dinput[tid * inputWidth + i] = 1.0f / (1.001f - outp[tid * inputWidth + i]);
+			if (expOutp[tid * inputWidth + i] > 0.5f)
+			{
+				error[tid * inputWidth + i] = -log(0.001f + outp[tid * inputWidth + i]);
+				dinput[tid * inputWidth + i] = -1.0f / (0.001f + outp[tid * inputWidth + i]);
+			}
+			else
+			{
+				error[tid * inputWidth + i] = -log(1.001f - outp[tid * inputWidth + i]);
+				dinput[tid * inputWidth + i] = 1.0f / (1.001f - outp[tid * inputWidth + i]);
+			}
 		}
 	}
 }
@@ -59,17 +59,17 @@ DNNLayerError::~DNNLayerError()
 double DNNLayerError::ComputeError(CPUGPUMemory* output, CPUGPUMemory *expectedOutput)
 {
 	int threadsPerBlock = 256;
-	int numBlocks = ((output->GetSize() / inputWidth) * inputWidth + threadsPerBlock - 1) / threadsPerBlock;
+	int numBlocks = ((output->GetSize() / inputWidth) + threadsPerBlock - 1) / threadsPerBlock;
 	if (square)
 	{
 		error_square_kernel<<<numBlocks, threadsPerBlock>>> (
-			(float*)error->GetGPUMemory(), (float*)deltaInput->GetGPUMemory(), (float*)expectedOutput->GetGPUMemory(), (float*)output->GetGPUMemory(), inputWidth, (output->GetSize() / inputWidth) * inputWidth);
+			(float*)error->GetGPUMemory(), (float*)deltaInput->GetGPUMemory(), (float*)expectedOutput->GetGPUMemory(), (float*)output->GetGPUMemory(), inputWidth, (output->GetSize() / inputWidth));
 		WaitForGPUToFinish();
 	}
 	else
 	{
 		error_log_kernel<<<numBlocks, threadsPerBlock>>> (
-			(float*)error->GetGPUMemory(), (float*)deltaInput->GetGPUMemory(), (float*)expectedOutput->GetGPUMemory(), (float*)output->GetGPUMemory(), inputWidth, (output->GetSize() / inputWidth) * inputWidth);
+			(float*)error->GetGPUMemory(), (float*)deltaInput->GetGPUMemory(), (float*)expectedOutput->GetGPUMemory(), (float*)output->GetGPUMemory(), inputWidth, (output->GetSize() / inputWidth));
 		WaitForGPUToFinish();
 	}
 
