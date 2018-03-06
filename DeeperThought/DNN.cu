@@ -79,7 +79,7 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 					if (parts.size() == 4)
 					{
 						o_min = convertToFloat(parts[2]);
-						o_min = convertToFloat(parts[3]);
+						o_max = convertToFloat(parts[3]);
 					}
 
 					DNNLayer *curLayer = new DNNLayerSigmoid(inpWidth, o_min, o_max, _batchSize);
