@@ -16,7 +16,7 @@ __global__ void movieuser_forward(float *outp, const int *inp, const float *para
 		float user[MAXVECWIDTH];
 
 		int m = inp[2 * tid];
-		int u = inp[2 * tid];
+		int u = inp[2 * tid + 1];
 
 		for (int i = 0; i < vectorWidthMovie; i++)
 		{
@@ -49,7 +49,7 @@ __global__ void movieuser_backward(float *dparams, const float *doutp, const flo
 		float duser[MAXVECWIDTH];
 
 		int m = inp[2 * tid];
-		int u = inp[2 * tid];
+		int u = inp[2 * tid + 1];
 
 		for (int i = 0; i < vectorWidthMovie; i++)
 		{
