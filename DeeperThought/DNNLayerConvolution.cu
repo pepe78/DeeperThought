@@ -108,12 +108,12 @@ DNNLayerConvolution::DNNLayerConvolution(int _numPics, int _x1, int _x2, int _nu
 	numPics = _numPics;
 	numConvolutions = _numConvolutions;
 
-	if (x1 * x2 > MAXX1X2)
+	if (x1 * x2 * numPics > MAXX1X2)
 	{
 		fprintf(stderr, "Project needs to be recompiled with larger field for convolution layer\n");
 		exit(-1);
 	}
-	if (y1 * y2 > MAXNUMCONVY1Y2)
+	if (y1 * y2 * numConvolutions > MAXNUMCONVY1Y2)
 	{
 		fprintf(stderr, "Project needs to be recompiled with larger field for convolution layer\n");
 		exit(-1);
