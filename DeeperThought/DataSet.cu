@@ -3,7 +3,7 @@
 DataSet::DataSet(string &dataFile, int _input_width, bool _input_float, int _output_width, bool _output_float, int batchSize)
 {
 	int numSamples = 0;
-	ifstream is(dataFile);
+	ifstream is(dataFile.c_str());
 	if (is.is_open())
 	{
 		while (true)

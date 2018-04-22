@@ -19,7 +19,7 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 {
 	bool inputIsFloat = true;
 	saveEvery = _saveEvery;
-	ifstream is(configFile);
+	ifstream is(configFile.c_str());
 	if (is.is_open())
 	{
 		string line;
@@ -399,7 +399,7 @@ void DNN::SaveToFile()
 		string filename = "params_";
 		filename += convertToString(epoch);
 		filename += ".bin";
-		ofstream os(filename, ios::out | ios::binary);
+		ofstream os(filename.c_str(), ios::out | ios::binary);
 		for (size_t i = 0; i < layers.size(); i++)
 		{
 			CPUGPUMemory *m = layers[i]->GetParams();
@@ -414,7 +414,7 @@ void DNN::SaveToFile()
 
 void DNN::LoadFromFile(string &paramFile)
 {
-	ifstream is(paramFile, ios::in | ios::binary);
+	ifstream is(paramFile.c_str(), ios::in | ios::binary);
 
 	if (is.is_open())
 	{

@@ -1,17 +1,21 @@
 #include "StringUtils.cuh"
 
 #include <fstream>
-#include <string>
 #include <cstdlib>
+#include <sstream>
 
 string convertToString(int num)
 {
-	return to_string(num);
+	stringstream ss;
+	ss << num;
+	return ss.str();
 }
 
 string convertToString(float num)
 {
-	return to_string(num);
+	stringstream ss;
+	ss << num;
+	return ss.str();
 }
 
 string getNumbersOnly(string &text)
@@ -70,7 +74,7 @@ float convertToFloat(string &inp)
 void AppendToFile(string filename, string &text)
 {
 	ofstream ofs;
-	ofs.open(filename, std::ofstream::out | std::ofstream::app);
+	ofs.open(filename.c_str(), std::ofstream::out | std::ofstream::app);
 	ofs << text;
 	ofs.close();
 }
