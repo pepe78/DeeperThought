@@ -2,9 +2,13 @@
 
 Deeper Thought is general framework for training Deep Neural Networks (and convolutional as well).
 
+To compile on linux:
+
+> ./compile.sh
+
 To run training using your train and test data from command line execute:
 
-DeeperThought.exe configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer) square/log
+> ./dt configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer) square/log wheremax/netflix/none
 
 ## Input format of data:
 
@@ -172,7 +176,7 @@ Accuracy: 99.38 % (on test data)
 
 ## What you need to download and install beforehand:
 
-* For compilation: [Visual Studio Community](https://www.visualstudio.com/vs/community/)
+* [Ubuntu 16.04.4 LTS for developers](https://www.ubuntu.com/desktop/developers)
 
 * CUDA for running on GPU: [CUDA](https://developer.nvidia.com/cuda-zone)
 
