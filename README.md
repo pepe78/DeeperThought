@@ -191,3 +191,5 @@ Accuracy: 99.38 % (on test data)
 * [Caffe](http://caffe.berkeleyvision.org/)
 
 * [Torch](http://torch.ch/)
+
+* [Keras](https://keras.io/)
