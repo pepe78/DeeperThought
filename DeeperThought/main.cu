@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
 	if (argc != 9)
 	{
-		printf("DeeperThought.exe configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer) square/log wheremax/netflix/none\n");
+		printf("./dt configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer) square/log wheremax/netflix/none\n");
 		exit(-1);
 	}
 
