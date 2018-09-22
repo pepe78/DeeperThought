@@ -148,9 +148,9 @@ Accuracy: 99.13 % (on test data)
 
 > softmax,10
 
-![graphF](./results/graphF.png)
+?
 
-Accuracy: 99.33 % (on test data)
+Accuracy: ? % (on test data)
 
 ### configG.txt (convolutional neural network CNN)
 
@@ -170,9 +170,9 @@ Accuracy: 99.33 % (on test data)
 
 > softmax,10
 
-![graphG](./results/graphG.png)
+?
 
-Accuracy: 99.38 % (on test data)
+Accuracy: ? % (on test data)
 
 ## What you need to download and install beforehand:
 

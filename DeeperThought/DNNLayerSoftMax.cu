@@ -36,10 +36,20 @@ __global__ void softmax_backward(float *dinp, const float *doutp, const float *o
 			float tmp = exp(inp[tid * inputWidth + i]);
 			sum += tmp;
 		}
-		for (int i = 0; i < inputWidth; i++)
-		{
-			dinp[tid * inputWidth + i] = doutp[tid * inputWidth + i] * (sum - exp(inp[tid * inputWidth + i])) / (sum * sum) * exp(inp[tid * inputWidth + i]);
-		}
+    for (int j = 0; j < inputWidth; j++)
+    {
+		  for (int i = 0; i < inputWidth; i++)
+		  {
+        if (i == j)
+        {
+  			  dinp[tid * inputWidth + i] += doutp[tid * inputWidth + j] * (sum - exp(inp[tid * inputWidth + i])) / (sum * sum) * exp(inp[tid * inputWidth + i]);
+        }
+        else
+        {
+  			  dinp[tid * inputWidth + i] -= doutp[tid * inputWidth + j] * exp(inp[tid * inputWidth + j]) / (sum * sum) * exp(inp[tid * inputWidth + i]);
+        }
+		  }
+    }
 	}
 }
 
