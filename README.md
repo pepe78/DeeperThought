@@ -40,7 +40,7 @@ You can download [MNIST dataset here](https://www.dropbox.com/s/9eoiignb7tlrr2u/
 
 ![graphA](./results/graph_A.png)
 
-Accuracy: 92.47 % (on test data)
+Top accuracy on test data: 92.47 %
 
 ### configC.txt (logistic regression)
 
@@ -52,7 +52,7 @@ Accuracy: 92.47 % (on test data)
 
 ![graphC](./results/graphC.png)
 
-Accuracy: 92.53 % (on test data)
+Top accuracy on test data: 92.53 %
 
 ### configB.txt (simple 2 layered network with dropout)
 
@@ -70,7 +70,7 @@ Accuracy: 92.53 % (on test data)
 
 ![graphB](./results/graph_B.png)
 
-Accuracy: 96.24 % (on test data)
+Top accuracy on test data: 96.24 %
 
 ### configD.txt (simple 2 layered network with dropout)
 
@@ -88,7 +88,7 @@ Accuracy: 96.24 % (on test data)
 
 ![graphD](./results/graphD.png)
 
-Accuracy: 96.33 % (on test data)
+Top accuracy on test data: 96.33 %
 
 ### configD.txt
 
@@ -106,7 +106,7 @@ Accuracy: 96.33 % (on test data)
 
 ![graphDlog](./results/graphDlog.png)
 
-Accuracy: 96.73 % (on test data)
+Top accuracy on test data: 96.73 %
 
 ### configE.txt (convolutional neural network CNN)
 
@@ -128,11 +128,11 @@ Accuracy: 96.73 % (on test data)
 
 ![graphE](./results/graphE.png)
 
-Accuracy: 99.13 % (on test data)
+Top accuracy on test data: 99.13 %
 
 ### configF.txt (convolutional neural network CNN)
 
-#### batch size 1000, log loss error, auto step size
+#### batch size 4000, log loss error, auto step size
 
 > convolution,1,28,28,400,5,5,0.5,-0.001
 
@@ -150,11 +150,11 @@ Accuracy: 99.13 % (on test data)
 
 ?
 
-Accuracy: ? % (on test data)
+Top accuracy on test data: ? %
 
 ### configG.txt (convolutional neural network CNN)
 
-#### batch size 1000, log loss error, auto step size
+#### batch size 4000, log loss error, auto step size
 
 > convolution,1,28,28,200,8,8,0.5,-0.001
 
@@ -170,13 +170,13 @@ Accuracy: ? % (on test data)
 
 > softmax,10
 
-?
+![graphG](./results/graphG2.png)
 
-Accuracy: ? % (on test data)
+Top accuracy on test data: 99.41 %
 
 ## What you need to download and install beforehand:
 
-* [Ubuntu 16.04.4 LTS for developers](https://www.ubuntu.com/desktop/developers)
+* [Ubuntu for developers](https://www.ubuntu.com/desktop/developers)
 
 * CUDA for running on GPU: [CUDA](https://developer.nvidia.com/cuda-zone)
 
@@ -191,6 +191,8 @@ Accuracy: ? % (on test data)
 * [Keras](https://keras.io/)
 
 * [MXNet](https://mxnet.apache.org/)
+
+* [PyTorch](https://pytorch.org/)
 
 * [TensorFlow](https://www.tensorflow.org/)
 
