@@ -148,9 +148,9 @@ Top accuracy on test data: 99.13 %
 
 > softmax,10
 
-?
+![graphF](./results/graphF2.png)
 
-Top accuracy on test data: ? %
+Top accuracy on test data: 99.36 %
 
 ### configG.txt (convolutional neural network CNN)
 
