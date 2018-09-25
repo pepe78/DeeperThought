@@ -106,7 +106,7 @@ CPUGPUMemory* DNNLayer::GetParams()
 
 void DNNLayer::MakeStep()
 {
-	if (params != NULL & dparams != NULL)
+	if (params != NULL && dparams != NULL)
 	{
 		float sugStepSize = -1;
 		if (stepSize < 0)
