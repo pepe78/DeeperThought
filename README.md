@@ -184,16 +184,6 @@ Top accuracy on test data: 99.41 %
 
 ## Other alternatives for training DNNs in alphabetical order:
 
-* [Caffe](http://caffe.berkeleyvision.org/)
-
 * [CNTK](https://github.com/Microsoft/CNTK)
 
-* [Keras](https://keras.io/)
-
-* [MXNet](https://mxnet.apache.org/)
-
-* [PyTorch](https://pytorch.org/)
-
 * [TensorFlow](https://www.tensorflow.org/)
-
-* [Torch](http://torch.ch/)
