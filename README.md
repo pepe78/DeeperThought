@@ -182,7 +182,7 @@ Top accuracy on test data: 99.41 %
 
 * CUDA GPU card. The one used for MNIST training above is [Nvidia GeForce GTX 1080 Ti](https://www.nvidia.com/en-us/geforce/products/10series/geforce-gtx-1080-ti/)
 
-## Other alternatives for training DNNs in alphabetical order:
+## Other alternatives for training DNNs:
 
 * [CNTK](https://github.com/Microsoft/CNTK)
 
