@@ -186,4 +186,6 @@ Top accuracy on test data: 99.41 %
 
 * [CNTK](https://github.com/Microsoft/CNTK)
 
+* [Pytorch](https://pytorch.org/)
+
 * [TensorFlow](https://www.tensorflow.org/)
