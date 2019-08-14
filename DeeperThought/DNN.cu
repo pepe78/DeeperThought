@@ -1,6 +1,7 @@
 #include "DNN.cuh"
 
 #include "StringUtils.cuh"
+#include "DNNLayerAugment.cuh"
 #include "DNNLayerConvolution.cuh"
 #include "DNNLayerMatrix.cuh"
 #include "DNNLayerMax.cuh"
@@ -48,6 +49,25 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 					float stepSize = convertToFloat(parts[8]);
 
 					DNNLayer *curLayer = new DNNLayerConvolution(numPics, x1, x2, numConvo, y1, y2, _batchSize, initVal, stepSize);
+					layers.push_back(curLayer);
+				}
+				else if (parts[0].compare("augment") == 0)
+				{
+					if (parts.size() != 9)
+					{
+						fprintf(stderr, "wrong setup of augment layer!\n");
+						exit(-1);
+					}
+					int numPics = convertToInt(parts[1]);
+					int x1 = convertToInt(parts[2]);
+					int x2 = convertToInt(parts[3]);
+					int numConvo = convertToInt(parts[4]);
+					int y1 = convertToInt(parts[5]);
+					int y2 = convertToInt(parts[6]);
+					float initVal = convertToFloat(parts[7]);
+					float stepSize = convertToFloat(parts[8]);
+
+					DNNLayer *curLayer = new DNNLayerAugment(numPics, x1, x2, numConvo, y1, y2, _batchSize, initVal, stepSize);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("matrix") == 0)
