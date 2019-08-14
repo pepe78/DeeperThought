@@ -125,10 +125,11 @@ void DNNLayer::MakeStep()
 			}
 
 			sugStepSize = (float)((-stepSize) * ((float)(ps + 0.01f) / (dps + 0.01f)));
-			if (sugStepSize > (-stepSize))
-			{
-				sugStepSize = (-stepSize);
-			}
+// * Go always relative - do not limit it *
+//			if (sugStepSize > (-stepSize))
+//			{
+//				sugStepSize = (-stepSize);
+//			}
 		}
 
 		int threadsPerBlock = 256;
