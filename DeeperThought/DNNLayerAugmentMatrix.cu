@@ -118,7 +118,16 @@ DNNLayerAugmentMatrix::DNNLayerAugmentMatrix(int _numPics, int _x1, int _x2, int
 		exit(-1);
 	}
 
-	//to do : set diagonal to 1, with rest random numbers so it starts with close to identy projection
+	//set diagonal to 1, with rest random numbers so it starts with close to identy projection
+	float* pars = (float*)params->GetCPUMemory();
+	for(int i=0;i<numConvolutions;i++)
+	{
+		for(int j=0;j<x1;j++)
+		{
+			pars[i * x1 * x2 + j * x2 +j] = 1.0f;
+		}
+	}
+	params->CopyCPUtoGPU();
 }
 
 DNNLayerAugmentMatrix::~DNNLayerAugmentMatrix()
