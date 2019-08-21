@@ -194,7 +194,7 @@ Top accuracy on test data: 99.41 %
 
 > softmax,10
 
-![graphH2](./results/graphH.png)
+![graphH2](./results/graphH2.png)
 
 Top accuracy on test data: 99.48 %
 
