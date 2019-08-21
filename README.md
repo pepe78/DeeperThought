@@ -174,6 +174,30 @@ Top accuracy on test data: 99.36 %
 
 Top accuracy on test data: 99.41 %
 
+### configH.txt (convolutional neural network CNN)
+
+#### batch size 2000 (due to memory restrictions), log loss error, auto step size
+
+> augmentmatrix,1,28,28,5,0.1,-0.001
+
+> convolution,5,28,28,200,8,8,0.5,-0.001
+
+> max,1000,21,21,7,7
+
+> matrix,9000,130,0.5,-0.001
+
+> sigmoid,130
+
+> dropout,130,0.5
+
+> matrix,130,10,0.5,-0.001
+
+> softmax,10
+
+![graphH](./results/graphH.png)
+
+Top accuracy on test data: 99.46 %
+
 ## What you need to download and install beforehand:
 
 * [Ubuntu for developers](https://www.ubuntu.com/desktop/developers)
