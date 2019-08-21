@@ -194,9 +194,9 @@ Top accuracy on test data: 99.41 %
 
 > softmax,10
 
-![graphH](./results/graphH.png)
+![graphH2](./results/graphH.png)
 
-Top accuracy on test data: 99.46 %
+Top accuracy on test data: 99.48 %
 
 ## What you need to download and install beforehand:
 
