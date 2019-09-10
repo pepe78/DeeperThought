@@ -213,3 +213,5 @@ Top accuracy on test data: 99.48 %
 * [Pytorch](https://pytorch.org/)
 
 * [TensorFlow](https://www.tensorflow.org/)
+
+* [WideOpenThoughts](https://github.com/pepe78/WideOpenThoughts)
