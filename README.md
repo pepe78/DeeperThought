@@ -208,10 +208,10 @@ Top accuracy on test data: 99.48 %
 
 ## Other alternatives for training DNNs:
 
-* [CNTK](https://github.com/Microsoft/CNTK)
+* [CNTK](https://github.com/Microsoft/CNTK) - Microsoft
 
-* [Pytorch](https://pytorch.org/)
+* [Pytorch](https://pytorch.org/) - Facebook
 
-* [TensorFlow](https://www.tensorflow.org/)
+* [TensorFlow](https://www.tensorflow.org/) - Google
 
 * [WideOpenThoughts](https://github.com/pepe78/WideOpenThoughts) - same as DeeperThought, but implemented in C++ OpenCL so that AMD GPU cards could be used
