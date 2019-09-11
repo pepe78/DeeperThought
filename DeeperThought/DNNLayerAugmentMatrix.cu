@@ -4,7 +4,7 @@
 #include <cstdio>
 
 #define MAXX1X2 784
-#define MAXNUMCONVY1Y2 3920
+#define MAXNUMCONVY1Y2 784
 
 __global__ void augmentmatrix_forward(float *outp, const float *inp, const float *pars, int numPics, int inputWidth, int outputWidth, int numConvolutions, int x1, int x2, int batchSize)
 {
@@ -112,7 +112,7 @@ DNNLayerAugmentMatrix::DNNLayerAugmentMatrix(int _numPics, int _x1, int _x2, int
 		fprintf(stderr, "Project needs to be recompiled with larger field for augment matrix layer\n");
 		exit(-1);
 	}
-	if (x1 * x2 * numPics > MAXNUMCONVY1Y2)
+	if (x1 * x2 > MAXNUMCONVY1Y2)
 	{
 		fprintf(stderr, "Project needs to be recompiled with larger field for augment matrix layer\n");
 		exit(-1);
