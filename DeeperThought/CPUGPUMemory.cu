@@ -8,7 +8,7 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 
-CPUGPUMemory::CPUGPUMemory(bool _is_float, int _size, float _initValues)
+CPUGPUMemory::CPUGPUMemory(bool _is_float, size_t _size, float _initValues)
 {
 	is_float = _is_float;
 	size = _size;
@@ -35,7 +35,7 @@ CPUGPUMemory::CPUGPUMemory(bool _is_float, int _size, float _initValues)
 	CopyCPUtoGPU();
 }
 
-void CPUGPUMemory::Resize(int newSize)
+void CPUGPUMemory::Resize(size_t newSize)
 {
 	size = newSize;
 }

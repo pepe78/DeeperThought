@@ -11,14 +11,14 @@ private:
 	void *memCPU;
 	void *memGPU;
 
-	int size;
+	size_t size;
 
 	bool is_float;
 public:
-	CPUGPUMemory(bool _is_float, int _size, float _initValues);
+	CPUGPUMemory(bool _is_float, size_t _size, float _initValues);
 	~CPUGPUMemory();
 
-	void Resize(int newSize);
+	void Resize(size_t newSize);
 	void* GetCPUMemory();
 	void* GetGPUMemory();
 	int GetSize();
