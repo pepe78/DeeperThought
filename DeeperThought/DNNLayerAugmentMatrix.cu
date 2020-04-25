@@ -3,30 +3,15 @@
 #include <cstdlib>
 #include <cstdio>
 
-#define MAXX1X2 784
-#define MAXNUMCONVY1Y2 784
-
 __global__ void augmentmatrix_forward(float *outp, const float *inp, const float *pars, int numPics, int inputWidth, int outputWidth, int numConvolutions, int x1, int x2, int batchSize)
 {
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
 	if (tid < batchSize)
 	{
-		float pics[MAXX1X2];
-		for (int i = 0; i < x1 * x2 * numPics; i++)
-		{
-			pics[i] = inp[tid * inputWidth + i];
-		}
-		float convos[MAXNUMCONVY1Y2];
-
 		int pos = 0;
 		for (int c = 0; c < numConvolutions; c++)
 		{
-		  for (int i = 0; i < x1 * x2; i++)
-		  {
-			  convos[i] = pars[c * x1 * x2 + i];
-		  }
-
 			for (int p = 0; p < numPics; p++)
 			{
 				for (int i = 0; i < x1; i++)
@@ -36,7 +21,7 @@ __global__ void augmentmatrix_forward(float *outp, const float *inp, const float
 						float tmp = 0;
 						for (int k = 0; k < x2; k++)
 						{
-							tmp += pics[p * x1 * x2 + i * x2 + k] * convos[k * x2 + j];
+							tmp += inp[tid * inputWidth + p * x1 * x2 + i * x2 + k] * pars[c * x1 * x2 + k * x2 + j];
 						}
 						outp[tid * outputWidth + pos] = tmp;
 						pos++;
@@ -53,21 +38,9 @@ __global__ void augmentmatrix_backward(float *dinp, float *dpars, const float *d
 
 	if (tid < batchSize)
 	{
-		float pics[MAXX1X2];
-		for (int i = 0; i < x1 * x2 * numPics; i++)
-		{
-			pics[i] = inp[tid * inputWidth + i];
-		}
-		float convos[MAXNUMCONVY1Y2];
-
 		int pos = 0;
 		for (int c = 0; c < numConvolutions; c++)
 		{
-		  for (int i = 0; i < x1 * x2; i++)
-		  {
-			  convos[i] = pars[c * x1 * x2 + i];
-		  }
-
 			for (int p = 0; p < numPics; p++)
 			{
 				for (int i = 0; i < x1; i++)
@@ -81,9 +54,9 @@ __global__ void augmentmatrix_backward(float *dinp, float *dpars, const float *d
 							{
 								if (dinp != NULL)
 								{
-									dinp[tid * inputWidth + p * x1 * x2 + i * x2 + k] += tmp * convos[k * x2 + j];
+									dinp[tid * inputWidth + p * x1 * x2 + i * x2 + k] += tmp * pars[c * x1 * x2 + k * x2 + j];
 								}
-								atomicAdd(&(dpars[c * x1 * x2 + k * x2 + j]), tmp * pics[p * x1 * x2 + i * x2 + k]);
+								atomicAdd(&(dpars[c * x1 * x2 + k * x2 + j]), tmp * inp[tid * inputWidth + p * x1 * x2 + i * x2 + k]);
 							}
 						}
 						pos++;
@@ -106,17 +79,6 @@ DNNLayerAugmentMatrix::DNNLayerAugmentMatrix(int _numPics, int _x1, int _x2, int
 	}
 	numPics = _numPics;
 	numConvolutions = _numConvolutions;
-
-	if (x1 * x2 * numPics > MAXX1X2)
-	{
-		fprintf(stderr, "Project needs to be recompiled with larger field for augment matrix layer\n");
-		exit(-1);
-	}
-	if (x1 * x2 > MAXNUMCONVY1Y2)
-	{
-		fprintf(stderr, "Project needs to be recompiled with larger field for augment matrix layer\n");
-		exit(-1);
-	}
 
 	//set diagonal to 1, with rest random numbers so it starts with close to identy projection
 	float* pars = (float*)params->GetCPUMemory();

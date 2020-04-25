@@ -3,30 +3,15 @@
 #include <cstdlib>
 #include <cstdio>
 
-#define MAXX1X2 3920
-#define MAXNUMCONVY1Y2 196
-
 __global__ void convolution_forward(float *outp, const float *inp, const float *pars, int numPics, int inputWidth, int outputWidth, int numConvolutions, int x1, int x2, int y1, int y2, int batchSize)
 {
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
 	if (tid < batchSize)
 	{
-		float pics[MAXX1X2];
-		for (int i = 0; i < x1 * x2 * numPics; i++)
-		{
-			pics[i] = inp[tid * inputWidth + i];
-		}
-		float convos[MAXNUMCONVY1Y2];
-
 		int pos = 0;
 		for (int c = 0; c < numConvolutions; c++)
 		{
-		  for (int i = 0; i < y1 * y2; i++)
-		  {
-			  convos[i] = pars[c * y1 * y2 + i];
-		  }
-
 			for (int p = 0; p < numPics; p++)
 			{
 				for (int i = 0; i < x1 - y1 + 1; i++)
@@ -38,7 +23,7 @@ __global__ void convolution_forward(float *outp, const float *inp, const float *
 						{
 							for (int l = 0; l < y2; l++)
 							{
-								tmp += pics[p * x1 * x2 + (i + k) * x2 + (j + l)] * convos[k * y2 + l];
+								tmp += inp[tid * inputWidth + p * x1 * x2 + (i + k) * x2 + (j + l)] * pars[c * y1 * y2 + k * y2 + l];
 							}
 						}
 						outp[tid * outputWidth + pos] = tmp;
@@ -56,21 +41,9 @@ __global__ void convolution_backward(float *dinp, float *dpars, const float *dou
 
 	if (tid < batchSize)
 	{
-		float pics[MAXX1X2];
-		for (int i = 0; i < x1 * x2 * numPics; i++)
-		{
-			pics[i] = inp[tid * inputWidth + i];
-		}
-		float convos[MAXNUMCONVY1Y2];
-
 		int pos = 0;
 		for (int c = 0; c < numConvolutions; c++)
 		{
-		  for (int i = 0; i < y1 * y2; i++)
-		  {
-			  convos[i] = pars[c * y1 * y2 + i];
-		  }
-
 			for (int p = 0; p < numPics; p++)
 			{
 				for (int i = 0; i < x1 - y1 + 1; i++)
@@ -86,9 +59,9 @@ __global__ void convolution_backward(float *dinp, float *dpars, const float *dou
 								{
 									if (dinp != NULL)
 									{
-										dinp[tid * inputWidth + p * x1 * x2 + (i + k) * x2 + (j + l)] += tmp * convos[k * y2 + l];
+										dinp[tid * inputWidth + p * x1 * x2 + (i + k) * x2 + (j + l)] += tmp * pars[c * y1 * y2 + k * y2 + l];
 									}
-									atomicAdd(&(dpars[c * y1 * y2 + k * y2 + l]), tmp * pics[p * x1 * x2 + (i + k) * x2 + (j + l)]);
+									atomicAdd(&(dpars[c * y1 * y2 + k * y2 + l]), tmp * inp[tid * inputWidth + p * x1 * x2 + (i + k) * x2 + (j + l)]);
 								}
 							}
 						}
@@ -109,17 +82,6 @@ DNNLayerConvolution::DNNLayerConvolution(int _numPics, int _x1, int _x2, int _nu
 	y2 = _y2;
 	numPics = _numPics;
 	numConvolutions = _numConvolutions;
-
-	if (x1 * x2 * numPics > MAXX1X2)
-	{
-		fprintf(stderr, "Project needs to be recompiled with larger field for convolution layer\n");
-		exit(-1);
-	}
-	if (y1 * y2 > MAXNUMCONVY1Y2)
-	{
-		fprintf(stderr, "Project needs to be recompiled with larger field for convolution layer\n");
-		exit(-1);
-	}
 }
 
 DNNLayerConvolution::~DNNLayerConvolution()
