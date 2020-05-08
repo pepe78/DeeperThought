@@ -2,6 +2,7 @@
 
 #include "StringUtils.cuh"
 #include "DNNLayerConvolution.cuh"
+#include "DNNLayerPreprocess.cuh"
 #include "DNNLayerMatrix.cuh"
 #include "DNNLayerMax.cuh"
 #include "DNNLayerSigmoid.cuh"
@@ -48,6 +49,27 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 					float stepSize = convertToFloat(parts[8]);
 
 					DNNLayer *curLayer = new DNNLayerConvolution(numPics, x1, x2, numConvo, y1, y2, _batchSize, initVal, stepSize);
+					layers.push_back(curLayer);
+				}
+				else if (parts[0].compare("preprocess") == 0)
+				{
+					if (parts.size() != 11)
+					{
+						fprintf(stderr, "wrong setup of preprocess layer!\n");
+						exit(-1);
+					}
+					int x1 = convertToInt(parts[1]);
+					int x2 = convertToInt(parts[2]);
+					float _minAngle = convertToFloat(parts[3]);
+					float _maxAngle = convertToFloat(parts[4]);
+					float _minStretch = convertToFloat(parts[5]);
+					float _maxStretch = convertToFloat(parts[6]);
+					float _minNoise = convertToFloat(parts[7]);
+					float _maxNoise = convertToFloat(parts[8]);
+					int _x1SamplePoints = convertToInt(parts[9]);
+					int _x2SamplePoints = convertToInt(parts[10]);
+
+					DNNLayer *curLayer = new DNNLayerPreprocess(x1, x2, _batchSize, _minAngle, _maxAngle, _minStretch, _maxStretch, _minNoise, _maxNoise, _x1SamplePoints, _x2SamplePoints);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("matrix") == 0)
