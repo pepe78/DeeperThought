@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-__global__ void preprocess_forward(float *outp, const float *noise, const float *inp, int inputWidth, int outputWidth, int x1, int x2, int batchSize, float angle, float sx, float sy, int nx1, int nx2, bool trainRun)
+__global__ void preprocess_forward(float *outp, float *tmp, const float *noise, const float *inp, int inputWidth, int outputWidth, int x1, int x2, int batchSize, float angle, float sx, float sy, int nx1, int nx2, bool trainRun)
 {
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
@@ -12,11 +12,10 @@ __global__ void preprocess_forward(float *outp, const float *noise, const float 
 	{
 		if(trainRun)
 		{
-			float tmp[28*28];
 			for(int i=0;i<outputWidth;i++)
 			{
 				outp[tid * outputWidth + i] = 0.0f;
-				tmp[i] = 0.0f;
+				tmp[tid * outputWidth + i] = 0.0f;
 			}
 		
 			for(int i=0;i<nx1;i++)
@@ -38,8 +37,8 @@ __global__ void preprocess_forward(float *outp, const float *noise, const float 
 					
 					if(fi>=0 && fi<x1 && fj>=0 && fj<x2)
 					{
-						outp[tid * outputWidth + fi * x2 + fj] = (outp[tid * outputWidth + fi * x2 + fj] * tmp[fi * x2 + fj] + p) / (tmp[fi * x2 + fj] + 1.0f);
-						tmp[fi * x2 + fj] += 1.0f;
+						outp[tid * outputWidth + fi * x2 + fj] = (outp[tid * outputWidth + fi * x2 + fj] * tmp[tid * outputWidth + fi * x2 + fj] + p) / (tmp[tid * outputWidth + fi * x2 + fj] + 1.0f);
+						tmp[tid * outputWidth + fi * x2 + fj] += 1.0f;
 					}
 				}
 			}
@@ -64,6 +63,7 @@ DNNLayerPreprocess::DNNLayerPreprocess(int _x1, int _x2, int _batchSize, float _
 	x1 = _x1;
 	x2 = _x2;
 	dom = new CPUGPUMemory(true, _batchSize * _x1 * _x2, 0);
+	tmpMem = new CPUGPUMemory(true, _batchSize * _x1 * _x2, 0);
 	
 	minAngle = _minAngle;
 	maxAngle = _maxAngle;
@@ -78,6 +78,7 @@ DNNLayerPreprocess::DNNLayerPreprocess(int _x1, int _x2, int _batchSize, float _
 DNNLayerPreprocess::~DNNLayerPreprocess()
 {
 	delete dom;
+	delete tmpMem;
 }
 
 void DNNLayerPreprocess::Forward(CPUGPUMemory* input)
@@ -94,7 +95,7 @@ void DNNLayerPreprocess::Forward(CPUGPUMemory* input)
 	int threadsPerBlock = 256;
 	int numBlocks = ((input->GetSize() / inputWidth) + threadsPerBlock - 1) / threadsPerBlock;
 	preprocess_forward<<<numBlocks, threadsPerBlock>>>(
-		(float*)output->GetGPUMemory(), (float*)dom->GetGPUMemory(), (float*)input->GetGPUMemory(), inputWidth, outputWidth, x1, x2, (input->GetSize() / inputWidth),
+		(float*)output->GetGPUMemory(), (float*)tmpMem->GetGPUMemory(), (float*)dom->GetGPUMemory(), (float*)input->GetGPUMemory(), inputWidth, outputWidth, x1, x2, (input->GetSize() / inputWidth),
 		minAngle + getRand() * (maxAngle - minAngle), minStretch + getRand() * (maxStretch - minStretch), minStretch + getRand() * (maxStretch - minStretch), 
 		x1SamplePoints, x2SamplePoints, trainRun);
 
