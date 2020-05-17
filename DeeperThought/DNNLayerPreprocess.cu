@@ -4,7 +4,9 @@
 #include <cstdlib>
 #include <cstdio>
 
-__global__ void preprocess_forward(float *outp, float *tmp, const float *noise, const float *inp, int inputWidth, int outputWidth, int x1, int x2, int batchSize, float angle, float sx, float sy, int nx1, int nx2, bool trainRun)
+#define MAXX1X2 784 //1 * 28 * 28
+
+__global__ void preprocess_forward(float *outp, const float *noise, const float *inp, int inputWidth, int outputWidth, int x1, int x2, int batchSize, float angle, float sx, float sy, int nx1, int nx2, bool trainRun)
 {
 	int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
@@ -12,10 +14,13 @@ __global__ void preprocess_forward(float *outp, float *tmp, const float *noise, 
 	{
 		if(trainRun)
 		{
+			float t_outp[MAXX1X2];
+			float t_tmp[MAXX1X2];
+			
 			for(int i=0;i<outputWidth;i++)
 			{
-				outp[tid * outputWidth + i] = 0.0f;
-				tmp[tid * outputWidth + i] = 0.0f;
+				t_outp[i] = 0.0f;
+				t_tmp[i] = 0.0f;
 			}
 		
 			for(int i=0;i<nx1;i++)
@@ -37,14 +42,14 @@ __global__ void preprocess_forward(float *outp, float *tmp, const float *noise, 
 					
 					if(fi>=0 && fi<x1 && fj>=0 && fj<x2)
 					{
-						outp[tid * outputWidth + fi * x2 + fj] = (outp[tid * outputWidth + fi * x2 + fj] * tmp[tid * outputWidth + fi * x2 + fj] + p) / (tmp[tid * outputWidth + fi * x2 + fj] + 1.0f);
-						tmp[tid * outputWidth + fi * x2 + fj] += 1.0f;
+						t_outp[fi * x2 + fj] = (t_outp[fi * x2 + fj] * t_tmp[fi * x2 + fj] + p) / (t_tmp[fi * x2 + fj] + 1.0f);
+						t_tmp[fi * x2 + fj] += 1.0f;
 					}
 				}
 			}
 			for(int i=0;i<outputWidth;i++)
 			{
-				outp[tid * outputWidth + i] += noise[tid * outputWidth + i];
+				outp[tid * outputWidth + i] = t_outp[i] + noise[tid * outputWidth + i];
 			}	
 		}
 		else
@@ -57,13 +62,12 @@ __global__ void preprocess_forward(float *outp, float *tmp, const float *noise, 
 	}
 }
 
-DNNLayerPreprocess::DNNLayerPreprocess(int _x1, int _x2, int _batchSize, float _minAngle, float _maxAngle, float _minStretch, float _maxStretch, float _minNoise, float _maxNoise, int _x1SamplePoints, int _x2SamplePoints)
+DNNLayerPreprocess::DNNLayerPreprocess(int _x1, int _x2, int _batchSize, float _minAngle, float _maxAngle, float _minStretch, float _maxStretch, float _minNoise, float _maxNoise, int _flipHor, int _flipVer, int _x1SamplePoints, int _x2SamplePoints)
 	: DNNLayer(_batchSize, _x1 * _x2, _x1 * _x2, 0, 0, 0)
 {
 	x1 = _x1;
 	x2 = _x2;
 	dom = new CPUGPUMemory(true, _batchSize * _x1 * _x2, 0);
-	tmpMem = new CPUGPUMemory(true, _batchSize * _x1 * _x2, 0);
 	
 	minAngle = _minAngle;
 	maxAngle = _maxAngle;
@@ -71,14 +75,21 @@ DNNLayerPreprocess::DNNLayerPreprocess(int _x1, int _x2, int _batchSize, float _
 	maxStretch = _maxStretch;
 	minNoise = _minNoise;
 	maxNoise = _maxNoise;
+	flipHor = _flipHor;
+	flipVer = _flipVer;
 	x1SamplePoints = _x1SamplePoints;
 	x2SamplePoints = _x2SamplePoints;
+	
+	if (x1 * x2 > MAXX1X2)
+	{
+		fprintf(stderr, "Project needs to be recompiled with larger field for preprocess layer\n");
+		exit(-1);
+	}
 }
 
 DNNLayerPreprocess::~DNNLayerPreprocess()
 {
 	delete dom;
-	delete tmpMem;
 }
 
 void DNNLayerPreprocess::Forward(CPUGPUMemory* input)
@@ -95,8 +106,10 @@ void DNNLayerPreprocess::Forward(CPUGPUMemory* input)
 	int threadsPerBlock = 256;
 	int numBlocks = ((input->GetSize() / inputWidth) + threadsPerBlock - 1) / threadsPerBlock;
 	preprocess_forward<<<numBlocks, threadsPerBlock>>>(
-		(float*)output->GetGPUMemory(), (float*)tmpMem->GetGPUMemory(), (float*)dom->GetGPUMemory(), (float*)input->GetGPUMemory(), inputWidth, outputWidth, x1, x2, (input->GetSize() / inputWidth),
-		minAngle + getRand() * (maxAngle - minAngle), minStretch + getRand() * (maxStretch - minStretch), minStretch + getRand() * (maxStretch - minStretch), 
+		(float*)output->GetGPUMemory(), (float*)dom->GetGPUMemory(), (float*)input->GetGPUMemory(), inputWidth, outputWidth, x1, x2, (input->GetSize() / inputWidth),
+		minAngle + getRand() * (maxAngle - minAngle), 
+		(minStretch + getRand() * (maxStretch - minStretch)) * (flipHor == 0 ? 1 : (getRand() < 0.5f ? -1 : 1)), 
+		(minStretch + getRand() * (maxStretch - minStretch)) * (flipVer == 0 ? 1 : (getRand() < 0.5f ? -1 : 1)), 
 		x1SamplePoints, x2SamplePoints, trainRun);
 
 }

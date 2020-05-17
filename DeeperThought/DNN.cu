@@ -53,7 +53,7 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 				}
 				else if (parts[0].compare("preprocess") == 0)
 				{
-					if (parts.size() != 11)
+					if (parts.size() != 13)
 					{
 						fprintf(stderr, "wrong setup of preprocess layer!\n");
 						exit(-1);
@@ -66,10 +66,12 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 					float _maxStretch = convertToFloat(parts[6]);
 					float _minNoise = convertToFloat(parts[7]);
 					float _maxNoise = convertToFloat(parts[8]);
-					int _x1SamplePoints = convertToInt(parts[9]);
-					int _x2SamplePoints = convertToInt(parts[10]);
+					int _flipHor = convertToInt(parts[9]);
+					int _flipVer = convertToInt(parts[10]);
+					int _x1SamplePoints = convertToInt(parts[11]);
+					int _x2SamplePoints = convertToInt(parts[12]);
 
-					DNNLayer *curLayer = new DNNLayerPreprocess(x1, x2, _batchSize, _minAngle, _maxAngle, _minStretch, _maxStretch, _minNoise, _maxNoise, _x1SamplePoints, _x2SamplePoints);
+					DNNLayer *curLayer = new DNNLayerPreprocess(x1, x2, _batchSize, _minAngle, _maxAngle, _minStretch, _maxStretch, _minNoise, _maxNoise, _flipHor, _flipVer, _x1SamplePoints, _x2SamplePoints);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("matrix") == 0)
