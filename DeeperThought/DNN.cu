@@ -18,6 +18,8 @@ using namespace std;
 
 DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _batchSize, string &paramFile, int _saveEvery, string &errorType, string &_whereMax)
 {
+	vector<int> noDeltaInput;
+	noDeltaInput.push_back(0);
 	bool inputIsFloat = true;
 	saveEvery = _saveEvery;
 	ifstream is(configFile.c_str());
@@ -73,6 +75,8 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 
 					DNNLayer *curLayer = new DNNLayerPreprocess(x1, x2, _batchSize, _minAngle, _maxAngle, _minStretch, _maxStretch, _minNoise, _maxNoise, _flipHor, _flipVer, _x1SamplePoints, _x2SamplePoints);
 					layers.push_back(curLayer);
+					
+					noDeltaInput.push_back((int)layers.size());
 				}
 				else if (parts[0].compare("matrix") == 0)
 				{
@@ -201,7 +205,10 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 
 	epoch = 0;
 
-	layers[0]->RemoveDeltaInput();
+	for(int i=0;i<noDeltaInput.size();i++)
+	{
+		layers[noDeltaInput[i]]->RemoveDeltaInput();
+	}
 	LoadFromFile(paramFile);
 
 	whereMax = _whereMax.compare("wheremax") == 0;

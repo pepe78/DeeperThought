@@ -67,9 +67,12 @@ __global__ void convolution_backward(float *dinp, float *dpars, const float *dou
 		int pos = 0;
 		for (int c = 0; c < numConvolutions; c++)
 		{		
-			for (int i = 0; i < y1 * y2; i++)
+			if (dinp != NULL)
 			{
-			  	convos[i] = pars[c * y1 * y2 + i];
+				for (int i = 0; i < y1 * y2; i++)
+				{
+				  	convos[i] = pars[c * y1 * y2 + i];
+				}
 			}
 		  
 			for (int p = 0; p < numPics; p++)
