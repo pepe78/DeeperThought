@@ -1,7 +1,0 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/x64
-/.vs/DeeperThought/v16
-/DeeperThought/x64
