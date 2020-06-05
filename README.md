@@ -6,6 +6,10 @@ To compile on linux:
 
 > ./compile.sh
 
+To compile on Windows with Visual Studio Community:
+
+Open DeeperThought.sln file in VS and build.
+
 To run training using your train and test data from command line execute:
 
 > ./dt configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer) square/log wheremax/netflix/none
@@ -181,7 +185,7 @@ Top accuracy on test data: 99.41 %
 
 ## What you need to download and install beforehand:
 
-* [Ubuntu for developers](https://www.ubuntu.com/desktop/developers)
+* [Ubuntu for developers](https://www.ubuntu.com/desktop/developers) or Windows with [Visual Studio Community with C++](https://visualstudio.microsoft.com/vs/community/)
 
 * CUDA for running on GPU: [CUDA](https://developer.nvidia.com/cuda-zone)
 
