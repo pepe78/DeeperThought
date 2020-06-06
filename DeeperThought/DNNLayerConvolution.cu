@@ -1,6 +1,5 @@
 #include "DNNLayerConvolution.cuh"
 
-#include <sys/time.h>
 #include <cstdlib>
 #include <cstdio>
 

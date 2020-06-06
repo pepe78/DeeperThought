@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
+#include <climits>
 
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
@@ -11,7 +12,12 @@
 CPUGPUMemory::CPUGPUMemory(bool _is_float, size_t _size, float _initValues)
 {
 	is_float = _is_float;
-	size = _size;
+	if (_size > INT_MAX)
+	{
+		fprintf(stderr, "project not ready for such sizes!");
+		exit(-1);
+	}
+	size = (int)_size;
 
 	memCPU = is_float ? (void*)new float[size] : (void*)new int[size];
 	memset(memCPU, 0, size * (is_float ? sizeof(float) : sizeof(int)));
@@ -37,7 +43,12 @@ CPUGPUMemory::CPUGPUMemory(bool _is_float, size_t _size, float _initValues)
 
 void CPUGPUMemory::Resize(size_t newSize)
 {
-	size = newSize;
+	if (newSize > INT_MAX)
+	{
+		fprintf(stderr, "project not ready for such sizes!");
+		exit(-1);
+	}
+	size = (int)newSize;
 }
 
 CPUGPUMemory::~CPUGPUMemory()
