@@ -47,6 +47,8 @@ You can download [MNIST dataset here](https://www.dropbox.com/s/9eoiignb7tlrr2u/
 
 > sigmoid,10
 
+Number of parameters in network: 7,850
+
 ![graphA](./results/graph_A.png)
 
 Top accuracy on test data: 92.47 %
@@ -58,6 +60,8 @@ Top accuracy on test data: 92.47 %
 > matrix,784,10,0.5,-0.001
 
 > sigmoid,10
+
+Number of parameters in network: 7,850
 
 ![graphC](./results/graphC.png)
 
@@ -77,6 +81,8 @@ Top accuracy on test data: 92.53 %
 
 > sigmoid,10
 
+Number of parameters in network: 79,510
+
 ![graphB](./results/graph_B.png)
 
 Top accuracy on test data: 96.24 %
@@ -95,6 +101,8 @@ Top accuracy on test data: 96.24 %
 
 > sigmoid,10
 
+Number of parameters in network: 79,510
+
 ![graphD](./results/graphD.png)
 
 Top accuracy on test data: 96.33 %
@@ -112,6 +120,8 @@ Top accuracy on test data: 96.33 %
 > matrix,100,10,0.5,-0.01
 
 > sigmoid,10
+
+Number of parameters in network: 79,510
 
 ![graphDlog](./results/graphDlog.png)
 
@@ -135,6 +145,8 @@ Top accuracy on test data: 96.73 %
 
 > sigmoid,10
 
+Number of parameters in network: 186,110
+
 ![graphE](./results/graphE.png)
 
 Top accuracy on test data: 99.13 %
@@ -157,6 +169,8 @@ Top accuracy on test data: 99.13 %
 
 > softmax,10
 
+Number of parameters in network: 971,660
+
 ![graphF](./results/graphF2.png)
 
 Top accuracy on test data: 99.36 %
@@ -178,6 +192,8 @@ Top accuracy on test data: 99.36 %
 > matrix,130,10,0.5,-0.001
 
 > softmax,10
+
+Number of parameters in network: 248,240
 
 ![graphG](./results/graphG2.png)
 
