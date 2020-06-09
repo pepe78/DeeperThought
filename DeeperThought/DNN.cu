@@ -213,6 +213,13 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 
 	whereMax = _whereMax.compare("wheremax") == 0;
 	netflixRun = _whereMax.compare("netflix") == 0;
+	
+	int numPars = 0;
+	for(size_t i=0;i<layers.size();i++)
+	{
+		numPars += layers[i]->GetNumParams();
+	}
+	printf("Number of parameters in network: %d\n", numPars);
 }
 
 DNN::~DNN()

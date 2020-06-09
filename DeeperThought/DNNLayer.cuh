@@ -31,6 +31,7 @@ public:
 	CPUGPUMemory* GetOutput();
 	CPUGPUMemory* GetDeltaInput();
 	CPUGPUMemory* GetParams();
+	int GetNumParams();
 	void MakeStep();
 
 	void RemoveDeltaInput();

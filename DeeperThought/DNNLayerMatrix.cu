@@ -7,8 +7,8 @@
 
 using namespace std;
 
-#define MAXINP 5000
-#define MAXOUTP 5000
+#define MAXINP 7000
+#define MAXOUTP 7000
 
 __global__ void matrix_forward(float *outp, const float *inp, const float *pars, int inputWidth, int outputWidth, int batchSize)
 {

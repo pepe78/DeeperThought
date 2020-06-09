@@ -59,6 +59,11 @@ DNNLayer::~DNNLayer()
 	}
 }
 
+int DNNLayer::GetNumParams()
+{
+	return numParams;
+}
+
 void DNNLayer::Forward(CPUGPUMemory* input)
 {
 	fprintf(stderr, "forward not implemented!\n");
