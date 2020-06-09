@@ -47,6 +47,8 @@ You can download [MNIST dataset here](https://www.dropbox.com/s/9eoiignb7tlrr2u/
 
 > sigmoid,10
 
+Number of parameters in network: 7,850
+
 ![graphA](./results/graph_A.png)
 
 Top accuracy on test data: 92.47 %
