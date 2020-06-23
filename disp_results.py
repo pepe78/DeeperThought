@@ -37,7 +37,7 @@ with open(filename, 'rt') as f:
 print('Max train accuracy:', max(a1))
 print('Max test accuracy:', max(a2))
 
-plt.figure(figsize=(30,20))
+plt.figure(figsize=(20,15))
 
 addsubgraph(221,t,a1,a2,'accuracy')
 addsubgraph(223,t,e1,e2,'error')
