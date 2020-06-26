@@ -15,7 +15,8 @@ private:
 
 	bool is_float;
 public:
-	CPUGPUMemory(bool _is_float, size_t _size, float _initValues);
+	CPUGPUMemory(bool _is_float, size_t _size, float _initValMin, float _initValMax);
+	CPUGPUMemory(bool _is_float, size_t _size, float _initValues) : CPUGPUMemory(_is_float, _size, -_initValues, _initValues) {};
 	~CPUGPUMemory();
 
 	void Resize(size_t newSize);

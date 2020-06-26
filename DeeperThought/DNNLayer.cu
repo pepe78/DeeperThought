@@ -16,7 +16,7 @@ __global__ void make_step_kernel(float *pars, float *dpars, float stepSize, int 
 	}
 }
 
-DNNLayer::DNNLayer(int _batchSize, int _inputWidth, int _outputWidth, int _numParams, float _initVal, float _stepSize)
+DNNLayer::DNNLayer(int _batchSize, int _inputWidth, int _outputWidth, int _numParams, float _initValMin, float _initValMax, float _stepSize)
 {
 	inputWidth = _inputWidth;
 	outputWidth = _outputWidth;
@@ -34,7 +34,7 @@ DNNLayer::DNNLayer(int _batchSize, int _inputWidth, int _outputWidth, int _numPa
 	}
 	else
 	{
-		params = new CPUGPUMemory(true, numParams, _initVal);
+		params = new CPUGPUMemory(true, numParams, _initValMin, _initValMax);
 		dparams = new CPUGPUMemory(true, numParams, 0);
 	}
 }

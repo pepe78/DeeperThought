@@ -19,7 +19,8 @@ protected:
 
 	bool trainRun;
 public:
-	DNNLayer(int _batchSize, int _inputWidth, int _outputWidth, int _numParams, float _initVal, float _stepSize);
+	DNNLayer(int _batchSize, int _inputWidth, int _outputWidth, int _numParams, float _initValMin, float _initValMax, float _stepSize);
+	DNNLayer(int _batchSize, int _inputWidth, int _outputWidth, int _numParams, float _initVal, float _stepSize) : DNNLayer(_batchSize, _inputWidth, _outputWidth, _numParams, -_initVal, _initVal, _stepSize) {};
 	~DNNLayer();
 
 	virtual void Forward(CPUGPUMemory* input);

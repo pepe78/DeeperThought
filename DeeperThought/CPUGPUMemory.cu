@@ -9,7 +9,7 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 
-CPUGPUMemory::CPUGPUMemory(bool _is_float, size_t _size, float _initValues)
+CPUGPUMemory::CPUGPUMemory(bool _is_float, size_t _size, float _initValMin, float _initValMax)
 {
 	is_float = _is_float;
 	if (_size > INT_MAX)
@@ -21,14 +21,14 @@ CPUGPUMemory::CPUGPUMemory(bool _is_float, size_t _size, float _initValues)
 
 	memCPU = is_float ? (void*)new float[size] : (void*)new int[size];
 	memset(memCPU, 0, size * (is_float ? sizeof(float) : sizeof(int)));
-	if (_initValues != 0)
+	if (_initValMin != 0 || _initValMax != 0)
 	{
 		if (is_float)
 		{
 			float *t = (float*)memCPU;
 			for (int i = 0; i < size; i++)
 			{
-				t[i] = (getRand() * 2.0f - 1.0f) * _initValues;
+				t[i] = _initValMin + (_initValMax - _initValMin) * getRand();
 			}
 		}
 	}

@@ -5,8 +5,8 @@ filename = 'debug.csv'
 
 def addsubgraph(which, t, q1, q2, lab):
 	plt.subplot(which)
-	plt.plot(t,q1,'b', label='train')
 	plt.plot(t,q2,'r', label='test')
+	plt.plot(t,q1,'b', label='train')
 	plt.xlabel('epoch')
 	plt.ylabel(lab)
 	plt.grid(color='k', linestyle=':', linewidth=1)

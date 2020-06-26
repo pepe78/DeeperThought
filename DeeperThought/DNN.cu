@@ -2,9 +2,11 @@
 
 #include "StringUtils.cuh"
 #include "DNNLayerConvolution.cuh"
+#include "DNNLayerConvolutionSq.cuh"
 #include "DNNLayerPreprocess.cuh"
 #include "DNNLayerMatrix.cuh"
 #include "DNNLayerMax.cuh"
+#include "DNNLayerMin.cuh"
 #include "DNNLayerSigmoid.cuh"
 #include "DNNLayerSoftMax.cuh"
 #include "DNNLayerRelu.cuh"
@@ -51,6 +53,26 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 					float stepSize = convertToFloat(parts[8]);
 
 					DNNLayer *curLayer = new DNNLayerConvolution(numPics, x1, x2, numConvo, y1, y2, _batchSize, initVal, stepSize);
+					layers.push_back(curLayer);
+				}
+				else if (parts[0].compare("convolutionsq") == 0)
+				{
+					if (parts.size() != 10)
+					{
+						fprintf(stderr, "wrong setup of convolutionsq layer!\n");
+						exit(-1);
+					}
+					int numPics = convertToInt(parts[1]);
+					int x1 = convertToInt(parts[2]);
+					int x2 = convertToInt(parts[3]);
+					int numConvo = convertToInt(parts[4]);
+					int y1 = convertToInt(parts[5]);
+					int y2 = convertToInt(parts[6]);
+					float initValMin = convertToFloat(parts[7]);
+					float initValMax = convertToFloat(parts[8]);
+					float stepSize = convertToFloat(parts[9]);
+
+					DNNLayer *curLayer = new DNNLayerConvolutionSq(numPics, x1, x2, numConvo, y1, y2, _batchSize, initValMin, initValMax, stepSize);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("preprocess") == 0)
@@ -166,6 +188,22 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 					DNNLayer *curLayer = new DNNLayerMax(numPics, x1, x2, d1, d2, _batchSize);
 					layers.push_back(curLayer);
 				}			
+				else if (parts[0].compare("min") == 0)
+				{
+					if (parts.size() != 6)
+					{
+						fprintf(stderr, "wrong setup of min layer!\n");
+						exit(-1);
+					}
+					int numPics = convertToInt(parts[1]);
+					int x1 = convertToInt(parts[2]);
+					int x2 = convertToInt(parts[3]);
+					int d1 = convertToInt(parts[4]);
+					int d2 = convertToInt(parts[5]);
+
+					DNNLayer *curLayer = new DNNLayerMin(numPics, x1, x2, d1, d2, _batchSize);
+					layers.push_back(curLayer);
+				}	
 				else if (parts[0].compare("movieuser") == 0)
 				{
 					if (parts.size() != 7)
