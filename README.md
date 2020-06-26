@@ -199,6 +199,24 @@ Number of parameters in network: 248,240
 
 Top accuracy on test data: 99.41 %
 
+### configK.txt (low parameter convolutional neural network CNN)
+
+#### batch size 3500, log loss error, auto step size
+
+> convolution,1,28,28,20,8,8,0.5,-0.001
+
+> max,20,21,21,7,7
+
+> matrix,180,10,0.5,-0.001
+
+> softmax,10
+
+Number of parameters in network: 3,090
+
+![graphK](./results/graphK.png)
+
+Top accuracy on test data: 98.70 %
+
 ## What you need to download and install beforehand:
 
 * [Ubuntu for developers](https://www.ubuntu.com/desktop/developers) or Windows with [Visual Studio Community with C++](https://visualstudio.microsoft.com/vs/community/)
