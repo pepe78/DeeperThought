@@ -36,6 +36,8 @@ with open(filename, 'rt') as f:
 
 print('Max train accuracy:', max(a1))
 print('Max test accuracy:', max(a2))
+print('Min train J:', min(e1))
+print('Min test J:', min(e2))
 
 plt.figure(figsize=(20,15))
 
