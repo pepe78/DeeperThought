@@ -235,7 +235,7 @@ Top accuracy on test data: 98.70 %
 
 > softmax,10
 
-Number of parameters in network: 
+Number of parameters in network: 134,210
 
 ![graphL](./results/graphL.png)
 
