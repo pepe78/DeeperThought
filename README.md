@@ -217,7 +217,7 @@ Number of parameters in network: 3,090
 
 Top accuracy on test data: 98.70 %
 
-### configL.txt (exact match convolutional neural network CNN)
+### configL.txt (exact match convolutional neural network EMC-NN)
 
 #### batch size 3500, log loss error, auto step size
 
