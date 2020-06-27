@@ -42,7 +42,7 @@ __global__ void convolutionsq_forward(float *outp, const float *inp, const float
 								tmp += t * t;
 							}
 						}
-						outp[tid * outputWidth + pos] = 1.0f / sqrt(tmp);
+						outp[tid * outputWidth + pos] = -tmp;
 						pos++;
 					}
 				}
@@ -81,7 +81,7 @@ __global__ void convolutionsq_backward(float *dinp, float *dpars, const float *d
 				{
 					for (int j = 0; j < x2 - y2 + 1; j++)
 					{
-						float tmp = -0.5f * doutp[tid * outputWidth + pos] * (outp[tid * outputWidth + pos] * outp[tid * outputWidth + pos] * outp[tid * outputWidth + pos]);
+						float tmp = -doutp[tid * outputWidth + pos];
 						
 						if (tmp != 0)
 						{
