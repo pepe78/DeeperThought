@@ -42,7 +42,7 @@ __global__ void convolutionsq_forward(float *outp, const float *inp, const float
 								tmp += t * t;
 							}
 						}
-						outp[tid * outputWidth + pos] = 1.0f-tmp;
+						outp[tid * outputWidth + pos] = -tmp;
 						pos++;
 					}
 				}
