@@ -217,6 +217,30 @@ Number of parameters in network: 3,090
 
 Top accuracy on test data: 98.70 %
 
+### configL.txt (exact match convolutional neural network CNN)
+
+#### batch size 3500, log loss error, auto step size
+
+> convolutionsq,1,28,28,500,8,8,0.0,1.0,-0.001
+
+> max,500,21,21,21,21
+
+> matrix,500,200,0.1,-0.001
+
+> sigmoid,200
+
+> dropout,200,0.5
+
+> matrix,200,10,0.1,-0.001
+
+> softmax,10
+
+Number of parameters in network: 
+
+![graphL](./results/graphL.png)
+
+Top accuracy on test data: 98.68 %
+
 ## What you need to download and install beforehand:
 
 * [Ubuntu for developers](https://www.ubuntu.com/desktop/developers) or Windows with [Visual Studio Community with C++](https://visualstudio.microsoft.com/vs/community/)
