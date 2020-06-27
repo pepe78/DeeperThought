@@ -4,7 +4,7 @@
 #include <cstdio>
 
 #define MAXX1X2 784 //1 * 28 * 28
-#define MAXNUMCONVY1Y2 64 //8 * 8
+#define MAXNUMCONVY1Y2 (15*15) //8 * 8
 
 __global__ void convolutionsq_forward(float *outp, const float *inp, const float *pars, int numPics, int inputWidth, int outputWidth, int numConvolutions, int x1, int x2, int y1, int y2, int batchSize)
 {
@@ -42,7 +42,7 @@ __global__ void convolutionsq_forward(float *outp, const float *inp, const float
 								tmp += t * t;
 							}
 						}
-						outp[tid * outputWidth + pos] = -tmp;
+						outp[tid * outputWidth + pos] = 1.0f-tmp;
 						pos++;
 					}
 				}
@@ -118,12 +118,12 @@ DNNLayerConvolutionSq::DNNLayerConvolutionSq(int _numPics, int _x1, int _x2, int
 	
 	if (x1 * x2 * numPics > MAXX1X2)
 	{
-		fprintf(stderr, "Project needs to be recompiled with larger field for convolution layer\n");
+		fprintf(stderr, "Project needs to be recompiled with larger field for convolutionsq layer\n");
 		exit(-1);
 	}
 	if (y1 * y2 > MAXNUMCONVY1Y2)
 	{
-		fprintf(stderr, "Project needs to be recompiled with larger field for convolution layer\n");
+		fprintf(stderr, "Project needs to be recompiled with larger field for convolutionsq layer\n");
 		exit(-1);
 	}
 }
