@@ -217,11 +217,11 @@ Number of parameters in network: 3,090
 
 Top accuracy on test data: 98.70 %
 
-### configL.txt (exact match convolutional neural network EMC-NN)
+### configL.txt ([exact match convolutional](https://www.frisky.world/2020/06/exact-match-convolution.html) neural network EMC-NN)
 
 #### batch size 3500, log loss error, auto step size
 
-> convolutionsq,1,28,28,500,8,8,0.0,1.0,-0.001
+> [convolutionsq](https://www.frisky.world/2020/06/exact-match-convolution.html),1,28,28,500,8,8,0.0,1.0,-0.001
 
 > max,500,21,21,21,21
 
