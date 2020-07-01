@@ -8,6 +8,8 @@
 #include "DNNLayerMax.cuh"
 #include "DNNLayerMin.cuh"
 #include "DNNLayerSigmoid.cuh"
+#include "DNNLayerLn.cuh"
+#include "DNNLayerExp.cuh"
 #include "DNNLayerSoftMax.cuh"
 #include "DNNLayerRelu.cuh"
 #include "DNNLayerDropout.cuh"
@@ -133,6 +135,30 @@ DNN::DNN(string &configFile, string &trainSetFile, string &testSetFile, int _bat
 					}
 
 					DNNLayer *curLayer = new DNNLayerSigmoid(inpWidth, o_min, o_max, _batchSize);
+					layers.push_back(curLayer);
+				}
+				else if (parts[0].compare("ln") == 0)
+				{
+					if (parts.size() != 2 && parts.size() != 2)
+					{
+						fprintf(stderr, "wrong setup of ln layer!\n");
+						exit(-1);
+					}
+					int inpWidth = convertToInt(parts[1]);
+
+					DNNLayer *curLayer = new DNNLayerLn(inpWidth, _batchSize);
+					layers.push_back(curLayer);
+				}
+				else if (parts[0].compare("exp") == 0)
+				{
+					if (parts.size() != 2 && parts.size() != 2)
+					{
+						fprintf(stderr, "wrong setup of exp layer!\n");
+						exit(-1);
+					}
+					int inpWidth = convertToInt(parts[1]);
+
+					DNNLayer *curLayer = new DNNLayerExp(inpWidth, _batchSize);
 					layers.push_back(curLayer);
 				}
 				else if (parts[0].compare("relu") == 0)
