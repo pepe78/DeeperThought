@@ -241,6 +241,30 @@ Number of parameters in network: 134,210
 
 Top accuracy on test data: 98.68 %
 
+### configM.txt
+
+#### batch size 3500, log loss error, auto step size
+
+> ln,784
+
+> matrix,784,500,0.1,-0.001
+
+> sigmoid,500
+
+> dropout,500,0.5
+
+> ln,500
+
+> matrix,500,10,0.1,-0.001
+
+> softmax,10
+
+Number of parameters in network: 397,510
+
+![graphM](./results/graphM.png)
+
+Top accuracy on test data: 98.40 %
+
 ## What you need to download and install beforehand:
 
 * [Ubuntu for developers](https://www.ubuntu.com/desktop/developers) or Windows with [Visual Studio Community with C++](https://visualstudio.microsoft.com/vs/community/)
