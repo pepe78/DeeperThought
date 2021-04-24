@@ -14,6 +14,10 @@ To run training using your train and test data from command line execute:
 
 > ./dt configFile trainFile testFile batchSize(integer) paramFile/null saveEveryNEpochs(integer) square/log wheremax/netflix/none
 
+or run MNIST example:
+
+> ./run_mnist_example.sh
+
 ## Input format of data:
 
 expOut_1, ... , expOut_n, inp_1, ... , inp_m
